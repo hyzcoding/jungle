@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nightriver.jungle.common.dao.ArticleMapper">
+    <resultMap id="BaseResultMap" type="com.nightriver.jungle.common.pojo.Article">
+        <result column="article_id" property="articleId"/>
+        <result column="article_title" property="articleTitle"/>
+        <result column="article_content" property="articleContent"/>
+        <result column="article_views" property="articleViews"/>
+        <result column="article_create" property="articleCreate"/>
+        <result column="article_forum" property="articleForum"/>
+        <result column="article_likes" property="articleLikes"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.nightriver.jungle.common.pojo.Article" useGeneratedKeys="true"
+            keyProperty="article_id">
+    INSERT INTO article (article_id, article_title, article_content, article_forum)
+    VALUES (#{articleId}, #{articleTitle}, #{articleContent}, #{articleForum})
+    </insert>
+    <select id="selectOne" parameterType="com.nightriver.jungle.common.pojo.Article" resultMap="BaseResultMap">
+        SELECT * FROM article
+        <where>
+            <if test="articleId != null">
+                article_id = #{articleId}
+            </if>
+            <if test="articleTitle != null">
+                AND article_title like #{articleTitle}
+            </if>
+            <if test="articleForum != null">
+                AND article_forum = #{articleForum}
+            </if>
+        </where>
+        LIMIT 1
+    </select>
+    <select id="selectById" parameterType="Integer" resultMap="BaseResultMap">
+        SELECT * FROM article
+        <where>
+            <if test="articleId != null">
+                article_id = #{articleId}
+            </if>
+        </where>
+        LIMIT 1
+    </select>
+    <select id="count" parameterType="com.nightriver.jungle.common.pojo.Article" resultMap="Integer">
+        SELECT COUNT(*) FROM article
+        <where>
+            <if test="articleId != null">
+                article_id = #{articleId}
+            </if>
+            <if test="articleTitle != null">
+                AND article_title like #{articleTitle}
+            </if>
+            <if test="articleForum != null">
+                AND article_forum = #{articleForum}
+            </if>
+        </where>
+    </select>
+    <select id="selectList" parameterType="com.nightriver.jungle.common.pojo.Article" resultMap="BaseResultMap">
+        SELECT * FROM article
+        <where>
+            <if test="articleId != null">
+                article_id = #{articleId}
+            </if>
+            <if test="articleTitle != null">
+                AND article_title like #{articleTitle}
+            </if>
+            <if test="articleForum != null">
+                AND article_forum = #{articleForum}
+            </if>
+        </where>
+    </select>
+    <update id="update" parameterType="com.nightriver.jungle.common.pojo.Article">
+        UPDATE article
+        <set>
+            <if test="articleTitle != null">article_title=#{articleTitle},</if>
+            <if test="articleForum != null">article_forum=#{articleForum},</if>
+            <if test="articleContent != null">article_content=#{articleContent}</if>
+        </set>
+        WHERE article_id=#{articleId}
+    </update>
+    <delete id="delete" parameterType="Integer">
+      DELETE FROM article WHERE article_id = #{articleId}
+    </delete>
+</mapper>

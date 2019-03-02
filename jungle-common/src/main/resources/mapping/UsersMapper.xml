@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nightriver.jungle.common.dao.UsersMapper">
+    <resultMap id="BaseResultMap" type="com.nightriver.jungle.common.pojo.Users">
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="user_pwd" jdbcType="VARCHAR" property="userPwd"/>
+        <result column="user_eml" jdbcType="VARCHAR" property="userEml"/>
+        <result column="user_role" jdbcType="VARCHAR" property="userRole"/>
+        <result column="user_coin" jdbcType="INTEGER" property="userCoin"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.nightriver.jungle.common.pojo.Users">
+        insert into users (user_pwd, user_eml,
+                           user_role)
+        values (#{userPwd,jdbcType=VARCHAR}, #{userEml,jdbcType=VARCHAR},
+                #{userRole,jdbcType=TINYINT})
+    </insert>
+    <select id="selectOne" parameterType="com.nightriver.jungle.common.pojo.Users" resultMap="BaseResultMap">
+        SELECT * FROM users
+        <where>
+            <if test="userId != null">
+                user_id = #{userId}
+            </if>
+            <if test="userEml != null">
+                AND user_eml = #{userEml}
+            </if>
+        </where>
+        LIMIT 1
+    </select>
+    <select id="selectById" parameterType="Integer" resultMap="BaseResultMap">
+        SELECT * FROM users
+        <where>
+            <if test="userId != null">
+                user_id = #{userId}
+            </if>
+        </where>
+        LIMIT 1
+    </select>
+    <select id="count" parameterType="com.nightriver.jungle.common.pojo.Users" resultMap="Integer">
+        SELECT COUNT(*) FROM users
+        <where>
+            <if test="userId != null">
+                user_id = #{userId}
+            </if>
+            <if test="userEml != null">
+                AND user_eml = #{userEml}
+            </if>
+        </where>
+        LIMIT 1
+    </select>
+    <select id="selectList" parameterType="com.nightriver.jungle.common.pojo.Users" resultMap="BaseResultMap">
+        SELECT * FROM users
+        <where>
+            <if test="userId != null">
+                user_id = #{userId}
+            </if>
+            <if test="userEml != null">
+                AND user_eml = #{userEml}
+            </if>
+        </where>
+    </select>
+    <update id="update" parameterType="com.nightriver.jungle.common.pojo.Users">
+        UPDATE users
+        <set>
+            <if test="userEml != null">user_eml=#{userEml},</if>
+            <if test="userPwd != null">user_pwd=#{userPwd},</if>
+            <if test="userCoin != null">user_coin=#{userCoin},</if>
+            <if test="userRole != null">user_role=#{userRole}</if>
+        </set>
+        WHERE user_id=#{userId}
+    </update>
+    <delete id="delete" parameterType="Integer">
+        DELETE
+        FROM users
+        WHERE user_id = #{userId}
+    </delete>
+</mapper>

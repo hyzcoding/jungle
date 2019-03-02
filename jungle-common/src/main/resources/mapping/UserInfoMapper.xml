@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nightriver.jungle.common.dao.UserInfoMapper">
+  <resultMap id="BaseResultMap" type="com.nightriver.jungle.common.pojo.UserInfo">
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_sex" jdbcType="TINYINT" property="userSex" />
+    <result column="user_following" jdbcType="INTEGER" property="userFollowing" />
+    <result column="user_followers" jdbcType="INTEGER" property="userFollowers" />
+    <result column="user_class" jdbcType="INTEGER" property="userClass" />
+    <result column="user_score" jdbcType="INTEGER" property="userScore" />
+    <result column="user_avatar" jdbcType="VARCHAR" property="userAvatar" />
+    <result column="user_sign" jdbcType="TIMESTAMP" property="userSign" />
+  </resultMap>
+  <insert id="insert" parameterType="com.nightriver.jungle.common.pojo.UserInfo">
+    insert into userinfo (user_id, user_name, user_sex, user_avatar)
+    values (#{userId}, #{userName}, #{userSex},  #{userAvatar})
+  </insert>
+  <select id="selectOne" parameterType="com.nightriver.jungle.common.pojo.UserInfo" resultMap="BaseResultMap">
+    SELECT * FROM userinfo
+    <where>
+      <if test="userId != null">
+        user_id = #{userId}
+      </if>
+      <if test="userName != null">
+        AND user_name like #{userName}
+      </if>
+      <if test="userSex != null">
+        AND user_sex = #{userSex}
+      </if>
+    </where>
+    LIMIT 1
+  </select>
+  <select id="selectById" parameterType="Integer" resultMap="BaseResultMap">
+    SELECT * FROM userinfo
+    <where>
+      <if test="userId != null">
+        user_id = #{userId}
+      </if>
+    </where>
+    LIMIT 1
+  </select>
+  <select id="count" parameterType="com.nightriver.jungle.common.pojo.UserInfo" resultMap="Integer">
+    SELECT COUNT(*) FROM userinfo
+    <where>
+      <if test="userId != null">
+        user_id = #{userId}
+      </if>
+      <if test="userName != null">
+        AND user_name like #{userName}
+      </if>
+      <if test="userSex != null">
+        AND user_sex = #{userSex}
+      </if>
+    </where>
+  </select>
+  <select id="selectList" parameterType="com.nightriver.jungle.common.pojo.UserInfo" resultMap="BaseResultMap">
+    SELECT * FROM userinfo
+    <where>
+      <if test="userId != null">
+        user_id = #{userId}
+      </if>
+      <if test="userName != null">
+        AND user_name like #{userName}
+      </if>
+      <if test="userSex != null">
+        AND user_sex = #{userSex}
+      </if>
+    </where>
+  </select>
+  <!-- TODO 分数自增需修改 -->
+  <update id="update" parameterType="com.nightriver.jungle.common.pojo.UserInfo">
+    UPDATE userinfo
+    <set>
+      <if test="userName != null">user_name=#{userName},</if>
+      <if test="userSex != null">user_sex=#{userSex},</if>
+      <if test="user_following != null">user_following=#{userFollowing}</if>
+      <if test="user_followers != null">user_followers=#{userFollowers}</if>
+      <if test="user_class != null">user_class=#{userClass}</if>
+      <if test="user_score != null">user_score=#{userScore}</if>
+      <if test="user_avatar != null">user_avatar=#{userAvatar}</if>
+      <if test="user_sign != null">user_sign=#{userSign}</if>
+    </set>
+    WHERE user_id=#{userId}
+  </update>
+  <delete id="delete" parameterType="Integer">
+      DELETE FROM userinfo WHERE user_id = #{userId}
+    </delete>
+</mapper>

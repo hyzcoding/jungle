@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nightriver.jungle.common.dao.RelationMapper">
+  <resultMap id="BaseResultMap" type="com.nightriver.jungle.common.pojo.Relation">
+    <result column="relation_id" jdbcType="INTEGER" property="relationId" />
+    <result column="relation_active" jdbcType="INTEGER" property="relationActive" />
+    <result column="relation_passive" jdbcType="INTEGER" property="relationPassive" />
+    <result column="relation_type" jdbcType="TINYINT" property="relationType" />
+  </resultMap>
+  <insert id="insert" parameterType="com.nightriver.jungle.common.pojo.Relation">
+    INSERT INTO relation (relation_active, relation_passive,
+      relation_type) VALUES ( #{relationActive}, #{relationPassive},
+      #{relationType})
+  </insert>
+  <select id="selectOne" parameterType="com.nightriver.jungle.common.pojo.Relation" resultMap="BaseResultMap">
+    SELECT * FROM relation
+    <where>
+      <if test="relationId != null">
+        relation_id = #{relationId}
+      </if>
+      <if test="relationActive != null">
+        AND relation_active = #{relationActive}
+      </if>
+      <if test="relationPassive != null">
+        AND relation_passive = #{relationPassive}
+      </if>
+      <if test="relationType != null">
+        AND relation_type = #{relationType}
+      </if>
+    </where>
+    LIMIT 1
+  </select>
+  <select id="selectById" parameterType="Integer" resultMap="BaseResultMap">
+    SELECT * FROM relation
+    <where>
+      <if test="relationId != null">
+        relation_id = #{relationId}
+      </if>
+    </where>
+    LIMIT 1
+  </select>
+  <select id="count" parameterType="com.nightriver.jungle.common.pojo.Relation" resultMap="Integer">
+    SELECT COUNT(*) FROM relation
+    <where>
+      <if test="relationId != null">
+        relation_id = #{relationId}
+      </if>
+      <if test="relationActive != null">
+        AND relation_active = #{relationActive}
+      </if>
+      <if test="relationPassive != null">
+        AND relation_passive = #{relationPassive}
+      </if>
+      <if test="relationType != null">
+        AND relation_type = #{relationType}
+      </if>
+    </where>
+  </select>
+  <select id="selectList" parameterType="com.nightriver.jungle.common.pojo.Relation" resultMap="BaseResultMap">
+    SELECT * FROM relation
+    <where>
+      <if test="relationId != null">
+        relation_id = #{relationId}
+      </if>
+      <if test="relationActive != null">
+        AND relation_active = #{relationActive}
+      </if>
+      <if test="relationPassive != null">
+        AND relation_passive = #{relationPassive}
+      </if>
+      <if test="relationType != null">
+        AND relation_type = #{relationType}
+      </if>
+    </where>
+  </select>
+  <update id="update" parameterType="com.nightriver.jungle.common.pojo.Relation">
+    UPDATE relation
+    <set>
+      <if test="relationActive != null">relation_active=#{relationActive},</if>
+      <if test="relationPassive != null">relation_passive=#{relationPassive},</if>
+      <if test="relationType != null">relation_type=#{relationType}</if>
+    </set>
+    WHERE relation_id=#{relationId}
+  </update>
+  <delete id="delete" parameterType="Integer">
+      DELETE FROM relation WHERE relation_id = #{relationId}
+    </delete>
+</mapper>

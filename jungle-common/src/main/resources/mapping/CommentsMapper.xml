@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nightriver.jungle.common.dao.CommentsMapper">
+    <resultMap id="BaseResultMap" type="com.nightriver.jungle.common.pojo.Comments">
+        <result column="comments_id" jdbcType="INTEGER" property="commentsId"/>
+        <result column="comments_content" jdbcType="VARCHAR" property="commentsContent"/>
+        <result column="comments_type" jdbcType="TINYINT" property="commentsType"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.nightriver.jungle.common.pojo.Comments">
+        INSERT INTO comments (comments_content, comments_type)
+        VALUES (#{commentsContent}, #{commentsType})
+    </insert>
+    <select id="selectOne" parameterType="com.nightriver.jungle.common.pojo.Comments" resultMap="BaseResultMap">
+        SELECT * FROM comments
+        <where>
+            <if test="commentsId != null">
+                comments_id = #{commentsId}
+            </if>
+            <if test="commentsType != null">
+                AND comments_type = #{commentsType}
+            </if>
+        </where>
+        LIMIT 1
+    </select>
+    <select id="selectById" parameterType="Integer" resultMap="BaseResultMap">
+        SELECT * FROM comments
+        <where>
+            <if test="commentsId != null">
+                comments_id = #{commentsId}
+            </if>
+        </where>
+        LIMIT 1
+    </select>
+    <select id="count" parameterType="com.nightriver.jungle.common.pojo.Comments" resultMap="Integer">
+        SELECT COUNT(*) FROM comments
+        <where>
+            <if test="commentsId != null">
+                comments_id = #{commentsId}
+            </if>
+            <if test="commentsContent != null">
+                AND comments_content like #{commentsContent}
+            </if>
+            <if test="commentsType != null">
+                AND comments_type = #{commentsType}
+            </if>
+        </where>
+    </select>
+    <select id="selectList" parameterType="com.nightriver.jungle.common.pojo.Comments" resultMap="BaseResultMap">
+        SELECT * FROM comments
+        <where>
+            <if test="commentsId != null">
+                comments_id = #{commentsId}
+            </if>
+            <if test="commentsContent != null">
+                AND comments_content like #{commentsContent}
+            </if>
+            <if test="commentsType != null">
+                AND comments_type = #{commentsType}
+            </if>
+        </where>
+    </select>
+    <update id="update" parameterType="com.nightriver.jungle.common.pojo.Comments">
+        UPDATE comments
+        <set>
+            <if test="commentsType != null">comments_type=#{commentsType},</if>
+            <if test="commentsContent != null">comments_content=#{commentsContent}</if>
+        </set>
+        WHERE comments_id=#{commentsId}
+    </update>
+    <delete id="delete" parameterType="Integer">
+        DELETE FROM comments WHERE comments_id = #{commentsId}
+    </delete>
+</mapper>
