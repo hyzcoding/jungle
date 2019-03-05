@@ -1,6 +1,6 @@
 package com.nightriver.jungle.common.dao;
 
-import com.nightriver.jungle.common.pojo.Users;
+import com.nightriver.jungle.common.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -11,47 +11,47 @@ import java.util.List;
  * @Version:        1.0
  **/
 @Mapper
-public interface UsersMapper {
+public interface UserMapper {
     /**
      * 插入用户
      * @param user 插入用户对象
      * @return 受影响行数
      */
-    int insert(Users user);
+    int insert(User user);
 
     /**
      * 条件查找用户
      * @param user 包含条件的用户对象
      * @return 查找到的用户对象
      */
-    Users selectOne(Users user);
+    User selectOne(User user);
 
     /**
      * 通过Id查找用户
      * @param userId
      * @return
      */
-    Users selectById(Integer userId);
+    User selectById(Integer userId);
     /**
      * 查询符合条件的总数
      * @param user
      * @return
      */
-    int count(Users user);
+    int count(User user);
 
     /**
      * 条件查找用户列表
      * @param user
      * @return
      */
-    List<Users> selectList(Users user);
+    List<User> selectList(User user);
 
     /**
      * 修改用户
      * @param user
      * @return
      */
-    int update(Users user);
+    int update(User user);
 
     /**
      * 根据Id删除用户

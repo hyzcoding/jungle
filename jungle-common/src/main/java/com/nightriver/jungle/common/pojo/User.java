@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @Version:        1.0
  **/
 @Entity
-public class Users implements Serializable {
+public class User implements Serializable {
     @Id
     @GeneratedValue
     private Integer userId;

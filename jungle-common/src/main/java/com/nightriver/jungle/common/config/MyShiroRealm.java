@@ -2,7 +2,6 @@ package com.nightriver.jungle.common.config;
 
 import com.nightriver.jungle.common.pojo.Users;
 import com.nightriver.jungle.common.service.UserService;
-import com.nightriver.jungle.common.util.Role;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -11,7 +10,6 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.util.ByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +41,7 @@ public class MyShiroRealm extends AuthorizingRealm {
 
     /**
      * 认证
-     * @param authenticationToken
+     * @param token
      * @return
      * @throws AuthenticationException
      */
@@ -67,7 +65,7 @@ public class MyShiroRealm extends AuthorizingRealm {
                 userDb,
                 userDb.getUserPwd(),
                 //salt=username+salt
-                ByteSource.Util.bytes(userDb.getCredentialsSalt()),
+//                ByteSource.Util.bytes(userDb.getCredentialsSalt()),
                 //realm name
                 getName()
         );

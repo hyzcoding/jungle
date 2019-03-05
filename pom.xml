@@ -5,11 +5,17 @@
     <packaging>pom</packaging>
     <modules>
         <module>jungle-common</module>
+        <module>jungle-gateway</module>
+        <module>jungle-config</module>
+        <module>jungle-eureka</module>
+        <module>jungle-admin</module>
+        <module>jungle-user</module>
+        <module>jungle-web</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.2.RELEASE</version>
+        <version>2.1.3.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.nightriver</groupId>
@@ -49,6 +55,18 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>2.0.0</version>
@@ -57,7 +75,6 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-zookeeper-config</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -106,34 +123,5 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>spring-milestones</id>
-            <name>Spring Milestones</name>
-            <url>https://repo.spring.io/milestone</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>repository.springframework.maven.release</id>
-            <name>Spring Framework Maven Release Repository</name>
-            <url>http://maven.springframework.org/milestone/</url>
-        </repository>
-        <repository>
-            <id>org.springframework</id>
-            <url> http://maven.springframework.org/snapshot</url>
-        </repository>
-        <repository>
-            <id>spring-milestone</id>
-            <name>Spring Maven MILESTONE Repository</name>
-            <url>http://repo.spring.io/libs-milestone</url>
-        </repository>
-        <repository>
-            <id>spring-release</id>
-            <name>Spring Maven RELEASE Repository</name>
-            <url>http://repo.spring.io/libs-release</url>
-        </repository>
-    </repositories>
 
 </project>
