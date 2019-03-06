@@ -20,7 +20,6 @@ import java.util.Map;
  * @Version:        1.0
  **/
 @Service
-@FeignClient("jungle-user")
 public interface UserService {
     /**
      * 注册用户
@@ -49,7 +48,7 @@ public interface UserService {
 
     /**
      * 查询符合条件的总数量
-     * @param userInfo
+     * @param userInfo 用户详情条件
      * @return
      */
     int findCount(UserInfo userInfo);

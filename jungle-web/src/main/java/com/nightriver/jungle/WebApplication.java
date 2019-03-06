@@ -1,4 +1,4 @@
-package com.nightriver.jungle.user;
+package com.nightriver.jungle;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,14 +10,14 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * 〈 〉
  *
  * @author hyz
- * @create 2019/3/5
+ * @create 2019/3/6
  * @since 1.0.0
  */
-@EnableDiscoveryClient
 @SpringBootApplication
-
-public class UserServiceApplication {
+@EnableDiscoveryClient
+@EnableFeignClients
+public class WebApplication {
     public static void main(String[] args) {
-        SpringApplication.run(UserServiceApplication.class, args);
+        SpringApplication.run(WebApplication.class, args);
     }
 }

@@ -6,8 +6,6 @@ import com.nightriver.jungle.common.pojo.User;
 import com.nightriver.jungle.common.pojo.UserInfo;
 import com.nightriver.jungle.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,9 +13,9 @@ import java.util.Map;
 
 /**
  * @Description:
- * @Author:         hyz
- * @CreateDate:     2019/3/5
- * @Version:        1.0
+ * @Author: hyz
+ * @CreateDate: 2019/3/5
+ * @Version: 1.0
  **/
 
 public class UserServiceImpl implements UserService {
@@ -27,7 +25,7 @@ public class UserServiceImpl implements UserService {
     UserInfoMapper userInfoMapper;
 
     @Override
-    public boolean regist(@ResponseBody User user, UserInfo userInfo) {
+    public boolean regist(User user, UserInfo userInfo) {
         userMapper.insert(user);
         userInfo.setUserId(user.getUserId());
         userInfoMapper.insert(userInfo);
@@ -36,14 +34,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<String, Object> login(User user) {
-        Map<String,Object> map = new HashMap<>(2);
+        Map<String, Object> map = new HashMap<>(2);
         user = userMapper.selectOne(user);
-        if(user == null){
+        if (user == null) {
             return null;
-        }else {
+        } else {
             UserInfo userInfo = userInfoMapper.selectById(user.getUserId());
-            map.put("user",user);
-            map.put("userInfo",userInfo);
+            map.put("user", user);
+            map.put("userInfo", userInfo);
             return map;
         }
     }
@@ -76,12 +74,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserInfo modifyInfo(UserInfo userInfo) {
-        return userInfoMapper.update(userInfo)>0?userInfo:userInfoMapper.selectById(userInfo.getUserId());
+        return userInfoMapper.update(userInfo) > 0 ? userInfo : userInfoMapper.selectById(userInfo.getUserId());
 
     }
 
     @Override
     public boolean remove(Integer id) {
-        return userMapper.deleteById(id)>0;
+        return userMapper.deleteById(id) > 0;
     }
 }

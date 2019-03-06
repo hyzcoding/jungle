@@ -1,8 +1,8 @@
 spring:
   application:
-    name: jungle-user
+    name: jungle-web
 server:
-  port: 9001
+  port: 9000
 eureka:
   client:
     service-url:
