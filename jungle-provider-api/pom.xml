@@ -9,13 +9,17 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jungle-user</artifactId>
-<dependencies>
-    <dependency>
-        <artifactId>jungle-common</artifactId>
-        <groupId>com.nightriver</groupId>
-        <version>0.0.1-SNAPSHOT</version>
-    </dependency>
-</dependencies>
+    <artifactId>jungle-provider-api</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>jungle-user-api</module>
+    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>com.nightriver</groupId>
+            <artifactId>jungle-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>

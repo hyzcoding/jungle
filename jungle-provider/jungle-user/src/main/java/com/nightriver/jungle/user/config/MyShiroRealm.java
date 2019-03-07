@@ -1,7 +1,7 @@
-package com.nightriver.jungle.common.config;
+package com.nightriver.jungle.user.config;
 
-import com.nightriver.jungle.common.pojo.Users;
-import com.nightriver.jungle.common.service.UserService;
+import com.nightriver.jungle.common.pojo.User;
+import com.nightriver.jungle.user.service.UserService;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -34,7 +34,7 @@ public class MyShiroRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         logger.info("权限配置-->MyShiroRealm.doGetAuthorizationInfo()");
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
-        Users user = (Users) principalCollection.getPrimaryPrincipal();
+        User user = (User) principalCollection.getPrimaryPrincipal();
         authorizationInfo.addRole(user.getUserRole());
         return authorizationInfo;
     }
@@ -53,9 +53,9 @@ public class MyShiroRealm extends AuthorizingRealm {
         System.out.println(token.getCredentials());
         //通过username从数据库中查找 User对象，如果找到，没找到.
         //实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
-        Users user = new Users();
+        User user = new User();
         user.setUserEml(userEml);
-        Users userDb = userService.findByWhere(user);
+        User userDb = userService.login(user);
 
         logger.info("----->>userInfo="+userDb.getUserPwd());
         if(userDb == null){
