@@ -22,7 +22,7 @@
         </where>
         LIMIT 1
     </select>
-    <select id="selectById" parameterType="Integer" resultMap="BaseResultMap">
+    <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         SELECT * FROM comments
         <where>
             <if test="commentsId != null">
@@ -31,7 +31,7 @@
         </where>
         LIMIT 1
     </select>
-    <select id="count" parameterType="com.nightriver.jungle.common.pojo.Comments" resultMap="Integer">
+    <select id="count" parameterType="com.nightriver.jungle.common.pojo.Comments" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM comments
         <where>
             <if test="commentsId != null">
@@ -67,7 +67,7 @@
         </set>
         WHERE comments_id=#{commentsId}
     </update>
-    <delete id="delete" parameterType="Integer">
+    <delete id="delete" parameterType="java.lang.Integer">
         DELETE FROM comments WHERE comments_id = #{commentsId}
     </delete>
 </mapper>

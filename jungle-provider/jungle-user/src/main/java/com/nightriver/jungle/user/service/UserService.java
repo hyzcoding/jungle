@@ -2,7 +2,9 @@ package com.nightriver.jungle.user.service;
 
 import com.nightriver.jungle.common.pojo.User;
 import com.nightriver.jungle.common.pojo.UserInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,13 +24,13 @@ import java.util.Map;
 @Service
 public interface UserService {
     /**
-     * 注册用户
+     * 注册
      * @param user
+     * @param userInfo
      * @return
      */
-    @PostMapping("/regist")
     @Transactional(rollbackFor = {Exception.class})
-    boolean regist(User user, UserInfo userInfo);
+    boolean register(User user, UserInfo userInfo);
 
     /**
      * 登陆用户
@@ -36,7 +38,7 @@ public interface UserService {
      * @return
      */
     @PostMapping("/login")
-    Map<String,Object> login(User user);
+    User login(User user);
 
     /**
      * 通过用户id查找用户详情

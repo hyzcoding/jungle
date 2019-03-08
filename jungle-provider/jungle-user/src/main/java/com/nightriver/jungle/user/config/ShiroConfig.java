@@ -1,11 +1,13 @@
-package com.nightriver.jungle.common.config;
+package com.nightriver.jungle.user.config;
 
+import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
-import org.apache.shiro.mgt.SecurityManager;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -18,6 +20,8 @@ import java.util.Properties;
  * @create 2019/3/5
  * @since 1.0.0
  */
+
+@Configuration
 public class ShiroConfig {
 
     @Bean
@@ -28,17 +32,18 @@ public class ShiroConfig {
         //拦截器.
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
         // 配置不会被拦截的链接 顺序判断
-        //filterChainDefinitionMap.put("/static/**", "anon");
+        filterChainDefinitionMap.put("/static/**", "anon");
         //配置退出 过滤器,其中的具体的退出代码Shiro已经替我们实现了
         filterChainDefinitionMap.put("/logout", "logout");
+       // filterChainDefinitionMap.put("/register", "register");
         //<!-- 过滤链定义，从上向下顺序执行，一般将/**放在最为下边 -->:这是一个坑呢，一不小心代码就不好使了;
         //<!-- authc:所有url都必须认证通过才可以访问; anon:所有url都都可以匿名访问-->
-        //filterChainDefinitionMap.put("/userInfo/**", "authc");
+        filterChainDefinitionMap.put("/userInfo/**", "authc");
 
         // 如果不设置默认会自动寻找Web工程根目录下的"/login.jsp"页面
-        //shiroFilterFactoryBean.setLoginUrl("/login");
+        shiroFilterFactoryBean.setLoginUrl("/login");
         // 登录成功后要跳转的链接
-        //shiroFilterFactoryBean.setSuccessUrl("/index");
+        shiroFilterFactoryBean.setSuccessUrl("/index");
         //未授权界面;
         shiroFilterFactoryBean.setUnauthorizedUrl("/response/responseMsg");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
@@ -79,12 +84,18 @@ public class ShiroConfig {
     createSimpleMappingExceptionResolver() {
         SimpleMappingExceptionResolver r = new SimpleMappingExceptionResolver();
         Properties mappings = new Properties();
-        mappings.setProperty("DatabaseException", "databaseError");//数据库异常处理
-        mappings.setProperty("UnauthorizedException", "/response/responseMsg");//无权限跳入的方法
-        r.setExceptionMappings(mappings);  // None by default
-        r.setDefaultErrorView("error");    // No default
-        r.setExceptionAttribute("ex");     // Default is "exception"
-        //r.setWarnLogCategory("example.MvcLogger");     // No default
+        //数据库异常处理
+        mappings.setProperty("DatabaseException", "databaseError");
+        //无权限跳入的方法
+        mappings.setProperty("UnauthorizedException", "/response/responseMsg");
+        // None by default
+        r.setExceptionMappings(mappings);
+        // No default
+        r.setDefaultErrorView("error");
+        // Default is "exception"
+        r.setExceptionAttribute("ex");
+        // No default
+        //r.setWarnLogCategory("example.MvcLogger");
         return r;
     }
 }

@@ -1,0 +1,20 @@
+server:
+  port: 7000
+#服务名字
+spring:
+  application:
+    name: jungle-config
+  cloud:
+    config:
+      server:
+        git:
+          #git 仓库的地址
+          uri: https://github.com/hyz951226/jungle.git
+          #git 仓库的账号密码
+          username: hyz951226
+          password: hyz804762373
+#加入注册中心，实现高可用
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

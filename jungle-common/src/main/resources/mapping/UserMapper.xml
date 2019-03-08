@@ -26,7 +26,7 @@
         </where>
         LIMIT 1
     </select>
-    <select id="selectById" parameterType="Integer" resultMap="BaseResultMap">
+    <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         SELECT * FROM user
         <where>
             <if test="userId != null">
@@ -35,7 +35,7 @@
         </where>
         LIMIT 1
     </select>
-    <select id="count" parameterType="com.nightriver.jungle.common.pojo.User" resultMap="Integer">
+    <select id="count" parameterType="com.nightriver.jungle.common.pojo.User" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM user
         <where>
             <if test="userId != null">
@@ -68,7 +68,7 @@
         </set>
         WHERE user_id=#{userId}
     </update>
-    <delete id="delete" parameterType="Integer">
+    <delete id="delete" parameterType="java.lang.Integer">
         DELETE
         FROM user
         WHERE user_id = #{userId}

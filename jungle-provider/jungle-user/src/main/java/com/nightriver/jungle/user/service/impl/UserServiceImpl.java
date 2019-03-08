@@ -6,6 +6,7 @@ import com.nightriver.jungle.common.pojo.User;
 import com.nightriver.jungle.common.pojo.UserInfo;
 import com.nightriver.jungle.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.Map;
  * @CreateDate: 2019/3/5
  * @Version: 1.0
  **/
-
+@Service
 public class UserServiceImpl implements UserService {
     @Autowired
     UserMapper userMapper;
@@ -25,7 +26,7 @@ public class UserServiceImpl implements UserService {
     UserInfoMapper userInfoMapper;
 
     @Override
-    public boolean regist(User user, UserInfo userInfo) {
+    public boolean register(User user, UserInfo userInfo) {
         userMapper.insert(user);
         userInfo.setUserId(user.getUserId());
         userInfoMapper.insert(userInfo);
@@ -33,16 +34,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<String, Object> login(User user) {
+    public User login(User user) {
         Map<String, Object> map = new HashMap<>(2);
         user = userMapper.selectOne(user);
         if (user == null) {
             return null;
         } else {
-            UserInfo userInfo = userInfoMapper.selectById(user.getUserId());
-            map.put("user", user);
-            map.put("userInfo", userInfo);
-            return map;
+            return user;
         }
     }
 

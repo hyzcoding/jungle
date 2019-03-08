@@ -30,7 +30,7 @@
         </where>
         LIMIT 1
     </select>
-    <select id="selectById" parameterType="Integer" resultMap="BaseResultMap">
+    <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         SELECT * FROM article
         <where>
             <if test="articleId != null">
@@ -39,7 +39,7 @@
         </where>
         LIMIT 1
     </select>
-    <select id="count" parameterType="com.nightriver.jungle.common.pojo.Article" resultMap="Integer">
+    <select id="count" parameterType="com.nightriver.jungle.common.pojo.Article" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM article
         <where>
             <if test="articleId != null">
@@ -76,7 +76,7 @@
         </set>
         WHERE article_id=#{articleId}
     </update>
-    <delete id="delete" parameterType="Integer">
+    <delete id="delete" parameterType="java.lang.Integer">
       DELETE FROM article WHERE article_id = #{articleId}
     </delete>
 </mapper>
