@@ -2,6 +2,7 @@ package com.nightriver.jungle.common.dao;
 
 import com.nightriver.jungle.common.pojo.Comments;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 /**
@@ -31,7 +32,7 @@ public interface CommentsMapper {
      * @param commentsId
      * @return
      */
-    Comments selectById(Integer commentsId);
+    Comments selectById(@Param("commentsId") Integer commentsId);
     /**
      * 查询符合条件的总数
      * @param comments
@@ -58,5 +59,5 @@ public interface CommentsMapper {
      * @param commentsId
      * @return
      */
-    int deleteById(Integer commentsId);
+    int deleteById(@Param("commentsId") Integer commentsId);
 }

@@ -2,8 +2,3 @@
 /.idea/
 *.iml
 SQL/
-jungle-admin/src/
-jungle-common/target/
-jungle-config/target/
-jungle-eureka/target/
-jungle-gateway/target/

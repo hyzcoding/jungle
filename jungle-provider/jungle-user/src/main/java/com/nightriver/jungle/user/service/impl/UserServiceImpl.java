@@ -1,5 +1,7 @@
 package com.nightriver.jungle.user.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.nightriver.jungle.common.dao.UserInfoMapper;
 import com.nightriver.jungle.common.dao.UserMapper;
 import com.nightriver.jungle.common.pojo.User;
@@ -60,8 +62,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserInfo> findList(UserInfo userInfo) {
-        return null;
+    public PageInfo<UserInfo> findList(int pageSize,int pageNum,UserInfo userInfo) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<UserInfo> usersInfo = userInfoMapper.selectList(userInfo);
+        PageInfo<UserInfo> userInfoPageInfo = new PageInfo<>(usersInfo);
+        return userInfoPageInfo;
     }
 
     @Override

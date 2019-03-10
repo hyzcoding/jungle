@@ -2,6 +2,7 @@ package com.nightriver.jungle.common.dao;
 
 import com.nightriver.jungle.common.pojo.Article;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public interface ArticleMapper {
      * @param articleId
      * @return
      */
-    Article selectById(Integer articleId);
+    Article selectById(@Param("articleId") Integer articleId);
     /**
      * 查询符合条件的总数
      * @param article
@@ -59,5 +60,5 @@ public interface ArticleMapper {
      * @param articleId
      * @return
      */
-    int deleteById(Integer articleId);
+    int deleteById(@Param("articleId") Integer articleId);
 }

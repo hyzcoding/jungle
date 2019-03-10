@@ -3,6 +3,7 @@ package com.nightriver.jungle.common.dao;
 import com.nightriver.jungle.common.pojo.Relation;
 import com.nightriver.jungle.common.pojo.Relation;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 /**
@@ -32,7 +33,7 @@ public interface RelationMapper {
      * @param relationId
      * @return
      */
-    Relation selectById(Integer relationId);
+    Relation selectById(@Param("relationId") Integer relationId);
     /**
      * 查询符合条件的总数
      * @param relation
@@ -59,5 +60,5 @@ public interface RelationMapper {
      * @param relationId
      * @return
      */
-    int deleteById(Integer relationId);
+    int deleteById(@Param("relationId") Integer relationId);
 }

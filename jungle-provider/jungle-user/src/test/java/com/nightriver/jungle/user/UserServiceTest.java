@@ -31,4 +31,9 @@ public class UserServiceTest {
         user.setUserPwd("123456");
         userService.login(user);
     }
+
+    @Test
+    public void testFindById(){
+        System.out.println(userService.findById(1));
+    }
 }

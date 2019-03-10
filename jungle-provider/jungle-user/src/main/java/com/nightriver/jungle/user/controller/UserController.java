@@ -1,5 +1,6 @@
 package com.nightriver.jungle.user.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.google.common.base.Strings;
 import com.nightriver.jungle.common.dto.Result;
 import com.nightriver.jungle.common.pojo.User;
@@ -15,12 +16,13 @@ import org.apache.shiro.subject.Subject;
 import org.mybatis.logging.Logger;
 import org.mybatis.logging.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
+import javax.jws.soap.SOAPBinding;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,8 +40,36 @@ public class UserController {
     UserService userService;
     @Autowired
     private JavaMailSender mailSender;
-//    @Value("${spring.mail.from}")
+    //    @Value("${spring.mail.from}")
     private String from = "hyz951226";
+
+    /**
+     * 获取验证码
+     *
+     * @param email 邮箱
+     * @return 返回结果
+     */
+    @GetMapping("/vcode")
+    public Result vCode(String email) {
+        Result result = new Result();
+        //查询邮箱是否合法
+        if (ValidatorUtil.isEmail(email)) {
+            //邮箱是否注册查询
+            String code = MailUtil.random(6);
+            //发送验证码
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(from);
+            message.setTo(email);
+            message.setSubject("主题：jungle 注册验证码");
+            message.setText(code);
+            mailSender.send(message);
+            result.setMessage("发送验证码成功");
+            result.setData(code);
+        } else {
+            result.setMessage("邮箱不合法");
+        }
+        return result;
+    }
 
     /**
      * 用户注册
@@ -49,7 +79,7 @@ public class UserController {
      * @param email    邮箱地址
      * @param sex      性别
      * @param vcode    验证码
-     * @return         返回结果
+     * @return 返回结果
      */
     @PostMapping("/register")
     public Result register(@RequestParam("name") String name,
@@ -88,30 +118,15 @@ public class UserController {
     }
 
     /**
-     * 获取验证码
+     * 管理员添加用户
      *
-     * @param email 邮箱
-     * @return 返回结果
+     * @return
      */
-    @GetMapping("/vcode")
-    public Result vCode(String email) {
+    @PostMapping("/user/add")
+    @RequiresRoles("ADMIN")
+    public Result add(@RequestBody User user) {
         Result result = new Result();
-        //查询邮箱是否合法
-        if (ValidatorUtil.isEmail(email)) {
-            //邮箱是否注册查询
-            String code = MailUtil.random(6);
-            //发送验证码
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(from);
-            message.setTo(email);
-            message.setSubject("主题：jungle 注册验证码");
-            message.setText(code);
-            mailSender.send(message);
-            result.setMessage("发送验证码成功");
-            result.setData(code);
-        } else {
-            result.setMessage("邮箱不合法");
-        }
+        userService.login(user);
         return result;
     }
 
@@ -147,28 +162,32 @@ public class UserController {
         if (error != null) {
             // 出错了，返回登录页面
             result.setMessage(error);
-            return null;
+            return result;
         }
         if (userDb != null) {
             UserInfo userInfo = userService.findById(userDb.getUserId());
-            Map<String,Object> map = new HashMap<>(2);
+            Map<String, Object> map = new HashMap<>(2);
             map.put("user", userDb);
             map.put("userInfo", userInfo);
-            result.setMessage("获取成功");
+            result.setMessage("登陆成功");
             result.setData(map);
+            return result;
+        } else {
+            result.setMessage("用户名/密码错误");
             return result;
         }
 
-        return null;
+
     }
 
     /**
      * 用户退出登录
+     *
      * @param user 用户id
      * @return 返回结果
      */
     @PostMapping("/logout")
-    public Result logout(@RequestBody User user){
+    public Result logout(@RequestBody User user) {
         Result result = new Result();
         SecurityUtils.getSubject().logout();
         result.setData("已退出登录");
@@ -191,7 +210,25 @@ public class UserController {
     }
 
     /**
+     * 条件查询用户
+     * @param map
+     * @return
+     */
+    @PostMapping("/userList")
+    public Result getList(@RequestBody Map map) {
+        int pageNum = (int) map.get("pageNum");
+        int pageSize = (int) map.get("pageSize");
+        UserInfo userInfo = (UserInfo) map.get("userInfo");
+        Result result = new Result();
+        PageInfo<UserInfo> userInfoPageInfo = userService.findList(pageSize, pageNum, userInfo);
+        result.setMessage("获取成功");
+        result.setData(userInfoPageInfo);
+        return result;
+    }
+
+    /**
      * 修改用户详情信息
+     *
      * @param userInfo 用户详细信息
      * @return 修改的用户详细信息
      */
@@ -200,7 +237,7 @@ public class UserController {
     public Result modifyInfo(@RequestBody UserInfo userInfo) {
         Result result = new Result();
         User user = (User) SecurityUtils.getSubject().getPrincipal();
-        if(Role.USER.equals(user.getUserRole())){
+        if (Role.USER.equals(user.getUserRole())) {
             userInfo.setUserId(user.getUserId());
         }
         userService.modifyInfo(userInfo);
@@ -212,6 +249,7 @@ public class UserController {
 
     /**
      * 修改用户账号密码等
+     *
      * @param user 用户
      * @return 结果
      */
@@ -219,7 +257,7 @@ public class UserController {
     @RequiresRoles({"USER", "MODERATOR", "ADMIN"})
     public Result modifyPwd(@RequestBody User user) {
         Result result = new Result();
-        if(Role.USER.equals(user.getUserRole())){
+        if (Role.USER.equals(user.getUserRole())) {
             user.setUserId(user.getUserId());
         }
         result.setMessage("修改成功");
@@ -227,16 +265,18 @@ public class UserController {
         userTmep.setUserId(user.getUserId());
         userTmep.setUserPwd(user.getUserPwd());
         result.setData(userService.modify(userTmep));
-        Subject subject =SecurityUtils.getSubject();
+        Subject subject = SecurityUtils.getSubject();
         User userSecurity = (User) subject.getPrincipal();
         //判断是否是用户
-        if(userSecurity.getUserId().equals(userTmep.getUserId())){
+        if (userSecurity.getUserId().equals(userTmep.getUserId())) {
             subject.logout();
         }
         return result;
     }
+
     /**
      * 修改用户金币等信息
+     *
      * @param user 用户
      * @return 结果
      */
@@ -251,6 +291,7 @@ public class UserController {
 
     /**
      * 删除用户
+     *
      * @param id 用户id
      * @return 结果
      */
@@ -258,10 +299,10 @@ public class UserController {
     @RequiresRoles({"ADMIN"})
     public Result remove(@RequestParam("id") int id) {
         Result result = new Result();
-        if(userService.remove(id)){
+        if (userService.remove(id)) {
             result.setMessage("删除成功");
             result.setData(true);
-        }else {
+        } else {
             result.setMessage("删除失败");
             result.setData(false);
         }

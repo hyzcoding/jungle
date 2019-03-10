@@ -67,7 +67,7 @@ public class MyShiroRealm extends AuthorizingRealm {
                 userDb,
                 userDb.getUserPwd(),
                 //salt=password
-                ByteSource.Util.bytes(userDb.getUserPwd()),
+//                ByteSource.Util.bytes(userDb.getUserPwd()),
                 //realm name
                 getName()
         );

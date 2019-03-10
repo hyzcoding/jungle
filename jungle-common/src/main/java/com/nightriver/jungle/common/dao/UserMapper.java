@@ -2,6 +2,7 @@ package com.nightriver.jungle.common.dao;
 
 import com.nightriver.jungle.common.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 /**
@@ -31,7 +32,7 @@ public interface UserMapper {
      * @param userId
      * @return
      */
-    User selectById(Integer userId);
+    User selectById(@Param("userId") Integer userId);
     /**
      * 查询符合条件的总数
      * @param user
@@ -58,5 +59,5 @@ public interface UserMapper {
      * @param userId
      * @return
      */
-    int deleteById(Integer userId);
+    int deleteById(@Param("userId") Integer userId);
 }

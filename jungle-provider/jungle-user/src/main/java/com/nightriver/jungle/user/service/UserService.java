@@ -1,5 +1,6 @@
 package com.nightriver.jungle.user.service;
 
+import com.github.pagehelper.PageInfo;
 import com.nightriver.jungle.common.pojo.User;
 import com.nightriver.jungle.common.pojo.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,6 @@ public interface UserService {
      * @param user
      * @return
      */
-    @PostMapping("/login")
     User login(User user);
 
     /**
@@ -45,8 +45,7 @@ public interface UserService {
      * @param id
      * @return
      */
-    @GetMapping("/user/{id}")
-    UserInfo findById(@PathVariable("id") Integer id);
+    UserInfo findById(Integer id);
 
     /**
      * 查询符合条件的总数量
@@ -63,14 +62,16 @@ public interface UserService {
     UserInfo findByWhere(UserInfo userInfo);
 
     /**
-     * 条件查找列表
-     * @param userInfo
+     * 获取用户详情列表
+     * @param pageSize 数量
+     * @param pageNum 页数
+     * @param userInfo 查询对象
      * @return
      */
-    List<UserInfo> findList(UserInfo userInfo);
+    PageInfo<UserInfo> findList(int pageSize,int pageNum,UserInfo userInfo);
 
     /**
-     * 修改用户密码，增加用户金币等
+     * 修改用户密码金币等
      * @param user
      * @return
      */

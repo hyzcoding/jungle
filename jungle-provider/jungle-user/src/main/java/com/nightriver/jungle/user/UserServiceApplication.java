@@ -7,13 +7,11 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
- * 〈一句话功能简述〉<br>
- * 〈 〉
- *
- * @author hyz
- * @create 2019/3/5
- * @since 1.0.0
- */
+ * @Description:    用户服务
+ * @Author:         hyz
+ * @CreateDate:     2019/3/9
+ * @Version:        1.0
+ **/
 @EnableEurekaClient
 @SpringBootApplication(scanBasePackages = {"com.nightriver.jungle"})
 @MapperScan("com.nightriver.jungle.common.dao")
