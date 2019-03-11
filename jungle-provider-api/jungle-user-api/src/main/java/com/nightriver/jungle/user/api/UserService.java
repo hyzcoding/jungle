@@ -1,10 +1,8 @@
 package com.nightriver.jungle.user.api;
 
-import com.nightriver.jungle.common.dto.Result;
 import com.nightriver.jungle.common.pojo.User;
 import com.nightriver.jungle.common.pojo.UserInfo;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +20,6 @@ public interface UserService {
      * @param userInfo
      * @return
      */
-    @Transactional(rollbackFor = {Exception.class})
     boolean register(User user, UserInfo userInfo);
 
     /**

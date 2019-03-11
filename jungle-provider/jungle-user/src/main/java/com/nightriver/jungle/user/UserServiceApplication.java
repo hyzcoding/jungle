@@ -1,10 +1,10 @@
 package com.nightriver.jungle.user;
 
+import com.spring4all.swagger.EnableSwagger2Doc;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
-import org.springframework.context.annotation.ComponentScan;
 
 /**
  * @Description:    用户服务
@@ -15,6 +15,7 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableEurekaClient
 @SpringBootApplication(scanBasePackages = {"com.nightriver.jungle"})
 @MapperScan("com.nightriver.jungle.common.dao")
+@EnableSwagger2Doc
 public class UserServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(UserServiceApplication.class, args);

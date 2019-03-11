@@ -3,18 +3,8 @@ package com.nightriver.jungle.user.service;
 import com.github.pagehelper.PageInfo;
 import com.nightriver.jungle.common.pojo.User;
 import com.nightriver.jungle.common.pojo.UserInfo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @Description:
@@ -31,7 +21,7 @@ public interface UserService {
      * @return
      */
     @Transactional(rollbackFor = {Exception.class})
-    boolean register(User user, UserInfo userInfo);
+    boolean register(User user, UserInfo userInfo) throws Exception;
 
     /**
      * 登陆用户
@@ -76,7 +66,7 @@ public interface UserService {
      * @return
      */
     @Transactional(rollbackFor = {Exception.class})
-    User modify(User user);
+    User modify(User user) throws Exception;
 
     /**
      * 用户修改信息
@@ -84,7 +74,7 @@ public interface UserService {
      * @return
      */
     @Transactional(rollbackFor = {Exception.class})
-    UserInfo modifyInfo(UserInfo userInfo);
+    UserInfo modifyInfo(UserInfo userInfo) throws Exception;
 
     /**
      * 删除用户
@@ -92,5 +82,5 @@ public interface UserService {
      * @return
      */
     @Transactional(rollbackFor = {Exception.class})
-    boolean remove(Integer id);
+    boolean remove(Integer id) throws Exception;
 }

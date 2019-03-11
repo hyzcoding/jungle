@@ -1,5 +1,7 @@
 package com.nightriver.jungle.common.dto;
 
+import org.springframework.http.HttpStatus;
+
 /**
  * 〈RESTFUL返回标准格式DTO〉<br>
  * 〈 〉
@@ -9,8 +11,17 @@ package com.nightriver.jungle.common.dto;
  * @since 1.0.0
  */
 public class Result {
-    String message;
-    Object data;
+    private HttpStatus code = HttpStatus.OK;
+    private String message;
+    private Object data;
+
+    public HttpStatus getCode() {
+        return code;
+    }
+
+    public void setCode(HttpStatus code) {
+        this.code = code;
+    }
 
     public String getMessage() {
         return message;

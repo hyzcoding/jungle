@@ -1,0 +1,18 @@
+server:
+  port: 8040
+spring:
+  application:
+    name: jungle-gateway
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone:localhost:8761/eureka
+  instance:
+    ip-address: true
+zuul:
+  # 忽略所有请求
+  # ignoredServices: '*'
+  routes:
+    jungle-user: /user/**

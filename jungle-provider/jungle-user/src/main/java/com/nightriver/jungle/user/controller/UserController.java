@@ -16,13 +16,12 @@ import org.apache.shiro.subject.Subject;
 import org.mybatis.logging.Logger;
 import org.mybatis.logging.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -64,9 +63,11 @@ public class UserController {
             message.setText(code);
             mailSender.send(message);
             result.setMessage("发送验证码成功");
+            result.setCode(HttpStatus.OK);
             result.setData(code);
         } else {
             result.setMessage("邮箱不合法");
+            result.setCode(HttpStatus.BAD_REQUEST);
         }
         return result;
     }
@@ -94,23 +95,31 @@ public class UserController {
         UserInfo userInfo = new UserInfo();
         if (Strings.isNullOrEmpty(name)) {
             result.setMessage("请输入用户名");
+            result.setCode(HttpStatus.BAD_REQUEST);
         } else if (!ValidatorUtil.isUsername(name)) {
             result.setMessage("用户名不合法");
+            result.setCode(HttpStatus.BAD_REQUEST);
         } else if (Strings.isNullOrEmpty(email)) {
             result.setMessage("请输入邮箱");
+            result.setCode(HttpStatus.BAD_REQUEST);
         } else if (!ValidatorUtil.isEmail(email.trim())) {
             result.setMessage("邮箱不合法");
+            result.setCode(HttpStatus.BAD_REQUEST);
         } else if (Strings.isNullOrEmpty(password)) {
             result.setMessage("请输入密码");
+            result.setCode(HttpStatus.BAD_REQUEST);
         } else if (!ValidatorUtil.isPassword(password.trim())) {
             result.setMessage("密码不合法");
+            result.setCode(HttpStatus.BAD_REQUEST);
         } else if (!dbvcode.equals(vcode.trim())) {
             result.setMessage("验证码错误");
+            result.setCode(HttpStatus.BAD_REQUEST);
         } else {
             user.setUserEml(email);
             user.setUserPwd(password);
             userInfo.setUserName(name);
             userInfo.setUserSex(sex.byteValue());
+            result.setCode(HttpStatus.OK);
             result.setMessage("注册成功！");
             result.setData("/login");
         }
@@ -162,6 +171,7 @@ public class UserController {
         if (error != null) {
             // 出错了，返回登录页面
             result.setMessage(error);
+            result.setCode(HttpStatus.BAD_REQUEST);
             return result;
         }
         if (userDb != null) {
@@ -170,10 +180,12 @@ public class UserController {
             map.put("user", userDb);
             map.put("userInfo", userInfo);
             result.setMessage("登陆成功");
+            result.setCode(HttpStatus.OK);
             result.setData(map);
             return result;
         } else {
             result.setMessage("用户名/密码错误");
+            result.setCode(HttpStatus.BAD_REQUEST);
             return result;
         }
 
@@ -190,7 +202,8 @@ public class UserController {
     public Result logout(@RequestBody User user) {
         Result result = new Result();
         SecurityUtils.getSubject().logout();
-        result.setData("已退出登录");
+        result.setMessage("已退出登录");
+        result.setCode(HttpStatus.OK);
         return result;
     }
 
@@ -204,6 +217,7 @@ public class UserController {
     public Result get(@RequestBody UserInfo userInfo) {
         Result result = new Result();
         userInfo = userService.findByWhere(userInfo);
+        result.setCode(HttpStatus.OK);
         result.setMessage("获取成功");
         result.setData(userInfo);
         return result;
@@ -214,13 +228,14 @@ public class UserController {
      * @param map
      * @return
      */
-    @PostMapping("/userList")
+    @GetMapping("/userList")
     public Result getList(@RequestBody Map map) {
         int pageNum = (int) map.get("pageNum");
         int pageSize = (int) map.get("pageSize");
         UserInfo userInfo = (UserInfo) map.get("userInfo");
         Result result = new Result();
         PageInfo<UserInfo> userInfoPageInfo = userService.findList(pageSize, pageNum, userInfo);
+        result.setCode(HttpStatus.OK);
         result.setMessage("获取成功");
         result.setData(userInfoPageInfo);
         return result;
@@ -232,7 +247,7 @@ public class UserController {
      * @param userInfo 用户详细信息
      * @return 修改的用户详细信息
      */
-    @PostMapping("/userInfo")
+    @PatchMapping("/userInfo")
     @RequiresRoles({"USER", "MODERATOR", "ADMIN"})
     public Result modifyInfo(@RequestBody UserInfo userInfo) {
         Result result = new Result();
@@ -240,7 +255,13 @@ public class UserController {
         if (Role.USER.equals(user.getUserRole())) {
             userInfo.setUserId(user.getUserId());
         }
-        userService.modifyInfo(userInfo);
+        try {
+            userService.modifyInfo(userInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(HttpStatus.BAD_REQUEST);
+            result.setMessage("修改失败");
+        }
         //权限验证
         result.setMessage("修改成功");
         result.setData(userInfo);
@@ -253,7 +274,7 @@ public class UserController {
      * @param user 用户
      * @return 结果
      */
-    @PostMapping("/user4pwd")
+    @PatchMapping("/user4pwd")
     @RequiresRoles({"USER", "MODERATOR", "ADMIN"})
     public Result modifyPwd(@RequestBody User user) {
         Result result = new Result();
@@ -261,10 +282,17 @@ public class UserController {
             user.setUserId(user.getUserId());
         }
         result.setMessage("修改成功");
+        result.setCode(HttpStatus.OK);
         User userTmep = new User();
         userTmep.setUserId(user.getUserId());
         userTmep.setUserPwd(user.getUserPwd());
-        result.setData(userService.modify(userTmep));
+        try {
+            result.setData(userService.modify(userTmep));
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage("修改失败");
+            result.setCode(HttpStatus.BAD_REQUEST);
+        }
         Subject subject = SecurityUtils.getSubject();
         User userSecurity = (User) subject.getPrincipal();
         //判断是否是用户
@@ -280,12 +308,18 @@ public class UserController {
      * @param user 用户
      * @return 结果
      */
-    @PostMapping("/user")
+    @PatchMapping("/user")
     @RequiresRoles({"USER", "MODERATOR", "ADMIN"})
     public Result modify(@RequestBody User user) {
         Result result = new Result();
         result.setMessage("修改成功");
-        result.setData(userService.modify(user));
+        try {
+            result.setData(userService.modify(user));
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(HttpStatus.BAD_REQUEST);
+            result.setMessage("修改失败");
+        }
         return result;
     }
 
@@ -299,11 +333,20 @@ public class UserController {
     @RequiresRoles({"ADMIN"})
     public Result remove(@RequestParam("id") int id) {
         Result result = new Result();
-        if (userService.remove(id)) {
-            result.setMessage("删除成功");
-            result.setData(true);
-        } else {
+        try {
+            if (userService.remove(id)) {
+                result.setMessage("删除成功");
+                result.setCode(HttpStatus.OK);
+                result.setData(true);
+            } else {
+                result.setMessage("删除失败");
+                result.setCode(HttpStatus.BAD_REQUEST);
+                result.setData(false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             result.setMessage("删除失败");
+            result.setCode(HttpStatus.BAD_REQUEST);
             result.setData(false);
         }
         return result;
