@@ -11,7 +11,7 @@ import java.util.List;
  * @CreateDate:     2019/3/2
  * @Version:        1.0
  **/
-@Service
+//@Service
 public interface ArticleService {
     /**
      * 添加文章

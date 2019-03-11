@@ -1,9 +1,9 @@
 package com.nightriver.jungle.web.user;
 
-import com.nightriver.jungle.user.api.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -13,15 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
  * @create 2019/3/11
  * @since 1.0.0
  */
-@RestController
+@Controller
 public class UserController {
     @RequestMapping(value = "index")
     public String index() {
         return "freemarker/index";
     }
-    @RequestMapping(value = "login")
+    @RequestMapping(value = "/login")
     public String login() {
-        return "freemarker/login";
+
+        return "/login";
     }
 
 }

@@ -208,15 +208,15 @@ public class UserController {
     }
 
     /**
-     * 获取用户详细信息
+     * 通过用户id查找用户详情
      *
-     * @param userInfo 用户详情
-     * @return 返回结果
+     * @param id
+     * @return
      */
-    @GetMapping("/user")
-    public Result get(@RequestBody UserInfo userInfo) {
+    @GetMapping("/user/{id}")
+    public Result<UserInfo> findById(@PathVariable("id") Integer id) {
         Result result = new Result();
-        userInfo = userService.findByWhere(userInfo);
+        UserInfo userInfo = userService.findById(id);
         result.setCode(HttpStatus.OK);
         result.setMessage("获取成功");
         result.setData(userInfo);
@@ -224,16 +224,18 @@ public class UserController {
     }
 
     /**
-     * 条件查询用户
-     * @param map
+     *
+     * @param keyWords
+     * @param pageNum
      * @return
      */
-    @GetMapping("/userList")
-    public Result getList(@RequestBody Map map) {
-        int pageNum = (int) map.get("pageNum");
-        int pageSize = (int) map.get("pageSize");
-        UserInfo userInfo = (UserInfo) map.get("userInfo");
+    @GetMapping("/s/{keywords}/{pageNum}")
+    public Result getList(@PathVariable("keywords") String keyWords,
+                          @PathVariable("pageNum") Integer pageNum) {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserName(keyWords);
         Result result = new Result();
+        int pageSize = 5;
         PageInfo<UserInfo> userInfoPageInfo = userService.findList(pageSize, pageNum, userInfo);
         result.setCode(HttpStatus.OK);
         result.setMessage("获取成功");
@@ -310,8 +312,8 @@ public class UserController {
      */
     @PatchMapping("/user")
     @RequiresRoles({"USER", "MODERATOR", "ADMIN"})
-    public Result modify(@RequestBody User user) {
-        Result result = new Result();
+    public Result<User> modify(@RequestBody User user) {
+        Result<User> result = new Result();
         result.setMessage("修改成功");
         try {
             result.setData(userService.modify(user));

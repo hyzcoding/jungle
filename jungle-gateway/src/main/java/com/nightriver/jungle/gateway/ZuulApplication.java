@@ -16,16 +16,12 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
  * @create 2019/3/11
  * @since 1.0.0
  */
-@SpringBootApplication(exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
+@SpringBootApplication
 //@EnableConfigServer
 //@RefreshScope
 @EnableZuulProxy
 public class ZuulApplication {
-
     public static void main(String[] args) throws Exception {
-
         SpringApplication.run(ZuulApplication.class, args);
-
     }
-
 }

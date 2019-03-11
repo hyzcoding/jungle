@@ -12,8 +12,8 @@
     </resultMap>
     <insert id="insert" parameterType="com.nightriver.jungle.common.pojo.Article" useGeneratedKeys="true"
             keyProperty="article_id">
-    INSERT INTO article (article_id, article_title, article_content, article_forum)
-    VALUES (#{articleId}, #{articleTitle}, #{articleContent}, #{articleForum})
+    INSERT INTO article (article_id, article_title, user_id, article_content, article_forum)
+    VALUES (#{articleId}, #{articleTitle}, #{userId}, #{articleContent}, #{articleForum})
     </insert>
     <select id="selectOne" parameterType="com.nightriver.jungle.common.pojo.Article" resultMap="BaseResultMap">
         SELECT * FROM article
@@ -26,6 +26,9 @@
             </if>
             <if test="articleForum != null">
                 AND article_forum = #{articleForum}
+            </if>
+            <if test="userId != null">
+                AND user_id = #{userId}
             </if>
         </where>
         LIMIT 1
@@ -51,6 +54,9 @@
             <if test="articleForum != null">
                 AND article_forum = #{articleForum}
             </if>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
         </where>
     </select>
     <select id="selectList" parameterType="com.nightriver.jungle.common.pojo.Article" resultMap="BaseResultMap">
@@ -65,6 +71,9 @@
             <if test="articleForum != null">
                 AND article_forum = #{articleForum}
             </if>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
         </where>
     </select>
     <update id="update" parameterType="com.nightriver.jungle.common.pojo.Article">
@@ -72,7 +81,8 @@
         <set>
             <if test="articleTitle != null">article_title=#{articleTitle},</if>
             <if test="articleForum != null">article_forum=#{articleForum},</if>
-            <if test="articleContent != null">article_content=#{articleContent}</if>
+            <if test="articleContent != null">article_content=#{articleContent},</if>
+            <if test="userId != null">user_id=#{userId}</if>
         </set>
         WHERE article_id=#{articleId}
     </update>

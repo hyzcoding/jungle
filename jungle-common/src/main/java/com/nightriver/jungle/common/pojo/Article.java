@@ -30,6 +30,8 @@ public class Article implements Serializable {
 
     private Integer articleLikes;
 
+    private Integer userId;
+
     public Integer getArticleId() {
         return articleId;
     }
@@ -84,5 +86,13 @@ public class Article implements Serializable {
 
     public void setArticleLikes(Integer articleLikes) {
         this.articleLikes = articleLikes;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }

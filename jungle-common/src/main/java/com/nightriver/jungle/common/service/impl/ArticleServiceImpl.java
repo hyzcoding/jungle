@@ -14,7 +14,7 @@ import java.util.List;
  * @CreateDate:     2019/3/2
  * @Version:        1.0
  **/
-@Service
+//@Service
 public class ArticleServiceImpl implements ArticleService {
     @Autowired
     ArticleMapper articleMapper;

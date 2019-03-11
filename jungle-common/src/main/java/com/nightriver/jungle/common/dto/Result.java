@@ -10,10 +10,10 @@ import org.springframework.http.HttpStatus;
  * @create 2019/3/7
  * @since 1.0.0
  */
-public class Result {
+public class Result<T> {
     private HttpStatus code = HttpStatus.OK;
     private String message;
-    private Object data;
+    private T data;
 
     public HttpStatus getCode() {
         return code;
@@ -35,7 +35,7 @@ public class Result {
         return data;
     }
 
-    public void setData(Object data) {
+    public void setData(T data) {
         this.data = data;
     }
 }
