@@ -1,4 +1,7 @@
 ##ignore this file##
-/.idea/
 *.iml
 SQL/
+.idea
+out
+gen
+/**/*.iml

@@ -17,6 +17,8 @@ spring:
     expose-session-attributes: true
     request-context-attribute: request
     suffix: .ftl
+  mvc:
+    static-path-pattern: /static/**
 eureka:
   client:
     serviceUrl:

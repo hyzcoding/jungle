@@ -1,25 +1,20 @@
-package com.nightriver.jungle.common.service;
+package com.nightriver.jungle.article.service;
 
+import com.github.pagehelper.PageInfo;
 import com.nightriver.jungle.common.pojo.Article;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-/**
- * @Description:    文章处理Service
- * @Author:         hyz
- * @CreateDate:     2019/3/2
- * @Version:        1.0
- **/
-//@Service
+@Service
 public interface ArticleService {
+
     /**
      * 添加文章
      * @param article
      * @return
      */
     @Transactional(rollbackFor = {Exception.class})
-    Article add(Article article);
+    Article add(Article article) throws Exception;
 
     /**
      * 通过文章id查找文章
@@ -47,7 +42,7 @@ public interface ArticleService {
      * @param article
      * @return
      */
-    List<Article> findList(Article article);
+    PageInfo<Article> findList(int pageNum,int pageSize,Article article);
 
     /**
      * 修改文章
@@ -55,7 +50,7 @@ public interface ArticleService {
      * @return
      */
     @Transactional(rollbackFor = {Exception.class})
-    Article modify(Article article);
+    Article modify(Article article) throws Exception;
 
     /**
      * 删除文章
@@ -63,5 +58,5 @@ public interface ArticleService {
      * @return
      */
     @Transactional(rollbackFor = {Exception.class})
-    int remove(Integer id);
+    int remove(Integer id) throws Exception;
 }
