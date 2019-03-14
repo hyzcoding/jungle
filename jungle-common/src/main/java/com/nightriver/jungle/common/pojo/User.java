@@ -8,17 +8,17 @@ import javax.persistence.GeneratedValue;
 import java.io.Serializable;
 
 /**
- * @Description:    用户实体
- * @Author:         hyz
- * @CreateDate:     2019/3/2
- * @Version:        1.0
+ * @Description: 用户实体
+ * @Author: hyz
+ * @CreateDate: 2019/3/2
+ * @Version: 1.0
  **/
 @Entity
 public class User implements Serializable {
     @Id
     @GeneratedValue
     private Integer userId;
-    @Column(unique =true)
+    @Column(unique = true)
     private String userPwd;
 
     private String userEml;
@@ -65,5 +65,16 @@ public class User implements Serializable {
 
     public void setUserCoin(Integer userCoin) {
         this.userCoin = userCoin;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", userPwd='" + userPwd + '\'' +
+                ", userEml='" + userEml + '\'' +
+                ", userRole='" + userRole + '\'' +
+                ", userCoin=" + userCoin +
+                '}';
     }
 }

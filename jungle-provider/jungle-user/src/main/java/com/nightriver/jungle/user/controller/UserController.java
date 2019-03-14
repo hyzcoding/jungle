@@ -152,6 +152,7 @@ public class UserController {
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(user.getUserEml(),
                 user.getUserPwd());
+        System.out.println(token.getPrincipal());
         String error = null;
         User userDb = null;
         try {
@@ -169,6 +170,7 @@ public class UserController {
             // 其他错误，比如锁定，如果想单独处理请单独catch处理
             error = "其他错误：" + e.getMessage();
         }
+        System.out.println(error);
         if (error != null) {
             // 出错了，返回登录页面
             result.setMessage(error);
@@ -189,7 +191,6 @@ public class UserController {
             result.setCode(HttpStatus.BAD_REQUEST);
             return result;
         }
-
 
     }
 

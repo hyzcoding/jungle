@@ -17,3 +17,6 @@ zuul:
   routes:
     jungle-user: /user/**
     jungle-web: /web/**
+    static:
+      path: /static/**
+      url: http://localhost:9002/static/

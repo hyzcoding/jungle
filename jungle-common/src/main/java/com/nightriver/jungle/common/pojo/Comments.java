@@ -7,10 +7,10 @@ import javax.persistence.GeneratedValue;
 import java.io.Serializable;
 
 /**
- * @Description:    评论实体
- * @Author:         hyz
- * @CreateDate:     2019/3/1
- * @Version:        1.0
+ * @Description: 评论实体
+ * @Author: hyz
+ * @CreateDate: 2019/3/1
+ * @Version: 1.0
  **/
 @Entity
 public class Comments implements Serializable {
@@ -44,5 +44,14 @@ public class Comments implements Serializable {
 
     public void setCommentsType(Byte commentsType) {
         this.commentsType = commentsType;
+    }
+
+    @Override
+    public String toString() {
+        return "Comments{" +
+                "commentsId=" + commentsId +
+                ", commentsContent='" + commentsContent + '\'' +
+                ", commentsType=" + commentsType +
+                '}';
     }
 }

@@ -19,9 +19,9 @@ public class UserController {
     public String index() {
         return "freemarker/index";
     }
+
     @RequestMapping(value = "/login")
     public String login() {
-
         return "/login";
     }
 

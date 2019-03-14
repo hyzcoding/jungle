@@ -5,11 +5,12 @@ import org.springframework.data.annotation.Id;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import java.io.Serializable;
+
 /**
- * @Description:   关系实体
- * @Author:         hyz
- * @CreateDate:     2019/3/2
- * @Version:        1.0
+ * @Description: 关系实体
+ * @Author: hyz
+ * @CreateDate: 2019/3/2
+ * @Version: 1.0
  **/
 @Entity
 public class Relation implements Serializable {
@@ -53,5 +54,15 @@ public class Relation implements Serializable {
 
     public void setRelationType(Byte relationType) {
         this.relationType = relationType;
+    }
+
+    @Override
+    public String toString() {
+        return "Relation{" +
+                "relationId=" + relationId +
+                ", relationActive=" + relationActive +
+                ", relationPassive=" + relationPassive +
+                ", relationType=" + relationType +
+                '}';
     }
 }

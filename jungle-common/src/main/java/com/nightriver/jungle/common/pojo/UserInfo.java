@@ -8,10 +8,10 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @Description:    用户信息实体
- * @Author:         hyz
- * @CreateDate:     2019/3/2
- * @Version:        1.0
+ * @Description: 用户信息实体
+ * @Author: hyz
+ * @CreateDate: 2019/3/2
+ * @Version: 1.0
  **/
 @Entity
 public class UserInfo implements Serializable {
@@ -105,5 +105,20 @@ public class UserInfo implements Serializable {
 
     public void setUserSign(Date userSign) {
         this.userSign = userSign;
+    }
+
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", userSex=" + userSex +
+                ", userFollowing=" + userFollowing +
+                ", userFollowers=" + userFollowers +
+                ", userClass=" + userClass +
+                ", userScore=" + userScore +
+                ", userAvatar='" + userAvatar + '\'' +
+                ", userSign=" + userSign +
+                '}';
     }
 }

@@ -6,11 +6,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import java.io.Serializable;
 import java.util.Date;
+
 /**
- * @Description:    文章对象
- * @Author:         hyz
- * @CreateDate:     2019/3/2
- * @Version:        1.0
+ * @Description: 文章对象
+ * @Author: hyz
+ * @CreateDate: 2019/3/2
+ * @Version: 1.0
  **/
 @Entity
 public class Article implements Serializable {
@@ -94,5 +95,19 @@ public class Article implements Serializable {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    @Override
+    public String toString() {
+        return "Article{" +
+                "articleId=" + articleId +
+                ", articleTitle='" + articleTitle + '\'' +
+                ", articleContent='" + articleContent + '\'' +
+                ", articleViews=" + articleViews +
+                ", articleCreate=" + articleCreate +
+                ", articleForum=" + articleForum +
+                ", articleLikes=" + articleLikes +
+                ", userId=" + userId +
+                '}';
     }
 }

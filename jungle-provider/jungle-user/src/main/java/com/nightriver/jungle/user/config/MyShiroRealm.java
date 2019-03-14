@@ -1,5 +1,6 @@
 package com.nightriver.jungle.user.config;
 
+import com.nightriver.jungle.common.dto.Result;
 import com.nightriver.jungle.common.pojo.User;
 import com.nightriver.jungle.user.service.UserService;
 import org.apache.shiro.authc.AuthenticationException;
@@ -10,11 +11,9 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.util.ByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 
 /**
@@ -27,8 +26,10 @@ public class MyShiroRealm extends AuthorizingRealm {
     Logger logger = LoggerFactory.getLogger(MyShiroRealm.class);
     @Autowired
     UserService userService;
+
     /**
      * 授权
+     *
      * @param principalCollection
      * @return
      */
@@ -43,6 +44,7 @@ public class MyShiroRealm extends AuthorizingRealm {
 
     /**
      * 认证
+     *
      * @param token
      * @return
      * @throws AuthenticationException
@@ -51,16 +53,14 @@ public class MyShiroRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         logger.info("MyShiroRealm.doGetAuthenticationInfo()");
         //获取用户的输入的账号.
-        String userEml = (String)token.getPrincipal();
-        System.out.println(token.getCredentials());
+        String userEml = (String) token.getPrincipal();
         //通过username从数据库中查找 User对象，如果找到，没找到.
         //实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
         User user = new User();
         user.setUserEml(userEml);
         User userDb = userService.login(user);
-
-        logger.info("----->>userInfo="+userDb.getUserPwd());
-        if(userDb == null){
+        logger.info("----->>userInfo=" + userDb.getUserPwd());
+        if (userDb == null) {
             return null;
         }
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(

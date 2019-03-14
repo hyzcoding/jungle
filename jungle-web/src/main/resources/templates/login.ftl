@@ -13,7 +13,8 @@
                         data: JSON.stringify($('form').serializeObject()),
                         contentType: "application/json",  //缺失会出现URL编码，无法转成json对象
                         success: function (e) {
-                            alert(e);
+                            var last=JSON.stringify(e);
+                            alert(last);
                         }
                     });
                 });
@@ -40,9 +41,12 @@
     </head>
     <body>
         <form action="#">
-            邮箱： <input type="text"/>
-            密码： <input type="password">
+            邮箱： <input type="text" name="userEml"/>
+            密码： <input type="password" name="userPwd">
             <button type="button" id="submit">提交</button>
         </form>
+
+        <h1>${result.code}</h1>
+        <h1>${result.message}</h1>
     </body>
 </html>
