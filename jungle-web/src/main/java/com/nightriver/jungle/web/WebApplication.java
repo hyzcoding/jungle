@@ -15,9 +15,10 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * @create 2019/3/6
  * @since 1.0.0
  */
-@SpringBootApplication(exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
+@SpringBootApplication(scanBasePackages = {"com.nightriver.jungle"},
+        exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 @EnableEurekaClient
-@EnableFeignClients
+@EnableFeignClients(basePackages =  {"com.nightriver.jungle"})
 public class WebApplication {
     public static void main(String[] args) {
         SpringApplication.run(WebApplication.class, args);

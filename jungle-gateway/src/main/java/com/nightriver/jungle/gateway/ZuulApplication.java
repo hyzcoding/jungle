@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -20,8 +21,10 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 //@EnableConfigServer
 //@RefreshScope
 @EnableZuulProxy
+@EnableEurekaClient
+@EnableFeignClients(basePackages =  {"com.nightriver.jungle"})
 public class ZuulApplication {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         SpringApplication.run(ZuulApplication.class, args);
     }
 }

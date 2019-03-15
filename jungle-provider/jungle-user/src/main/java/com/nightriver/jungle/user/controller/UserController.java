@@ -147,51 +147,13 @@ public class UserController {
      * @return 返回结果
      */
     @PostMapping("/login")
-    public Result login(@RequestBody User user) {
-        Result result = new Result();
-        Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken token = new UsernamePasswordToken(user.getUserEml(),
-                user.getUserPwd());
-        System.out.println(token.getPrincipal());
-        String error = null;
-        User userDb = null;
-        try {
-            subject.login(token);
-            userDb = (User) subject.getPrincipal();
-            token.setRememberMe(true);
-        } catch (UnknownAccountException e) {
-            error = "用户名/密码错误";
-        } catch (IncorrectCredentialsException e) {
-            error = "用户名/密码错误";
-        } catch (ExcessiveAttemptsException e) {
-            // TODO: handle exception
-            error = "登录失败多次，账户锁定10分钟";
-        } catch (AuthenticationException e) {
-            // 其他错误，比如锁定，如果想单独处理请单独catch处理
-            error = "其他错误：" + e.getMessage();
-        }
-        System.out.println(error);
-        if (error != null) {
-            // 出错了，返回登录页面
-            result.setMessage(error);
-            result.setCode(HttpStatus.BAD_REQUEST);
-            return result;
-        }
-        if (userDb != null) {
-            UserInfo userInfo = userService.findById(userDb.getUserId());
-            Map<String, Object> map = new HashMap<>(2);
-            map.put("user", userDb);
-            map.put("userInfo", userInfo);
-            result.setMessage("登陆成功");
-            result.setCode(HttpStatus.OK);
-            result.setData(map);
-            return result;
-        } else {
-            result.setMessage("用户名/密码错误");
-            result.setCode(HttpStatus.BAD_REQUEST);
-            return result;
-        }
-
+    public Result<User> login(@RequestBody User user) {
+        Result<User> result = new Result<>();
+        result.setCode(HttpStatus.OK);
+        result.setMessage("登录成功");
+        User userDb = userService.login(user);
+        result.setData(userDb);
+        return result;
     }
 
     /**

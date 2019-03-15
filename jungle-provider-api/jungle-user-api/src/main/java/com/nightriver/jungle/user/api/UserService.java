@@ -4,6 +4,7 @@ import com.nightriver.jungle.common.dto.Result;
 import com.nightriver.jungle.common.pojo.User;
 import com.nightriver.jungle.common.pojo.UserInfo;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
  * @since 1.0.0
  */
 @FeignClient("jungle-user")
+@Service
 public interface UserService {
     /**
      *
@@ -59,7 +61,7 @@ public interface UserService {
      * @return 返回结果
      */
     @PostMapping("/login")
-    Result login(@RequestBody User user);
+    Result<User> login(@RequestBody User user);
 
     /**
      * 用户退出登录
@@ -87,7 +89,7 @@ public interface UserService {
      * @param userInfo 用户详情条件
      * @return
      */
-    int findCount(UserInfo userInfo);
+//    int findCount(UserInfo userInfo);
 
     /**
      *

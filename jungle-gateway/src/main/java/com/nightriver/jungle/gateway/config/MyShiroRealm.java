@@ -1,8 +1,8 @@
-package com.nightriver.jungle.user.config;
+package com.nightriver.jungle.gateway.config;
 
 import com.nightriver.jungle.common.dto.Result;
 import com.nightriver.jungle.common.pojo.User;
-import com.nightriver.jungle.user.service.UserService;
+import com.nightriver.jungle.user.api.UserService;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -58,7 +58,8 @@ public class MyShiroRealm extends AuthorizingRealm {
         //实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
         User user = new User();
         user.setUserEml(userEml);
-        User userDb = userService.login(user);
+        Result<User> result = userService.login(user);
+        User userDb = result.getData();
         logger.info("----->>userInfo=" + userDb.getUserPwd());
         if (userDb == null) {
             return null;

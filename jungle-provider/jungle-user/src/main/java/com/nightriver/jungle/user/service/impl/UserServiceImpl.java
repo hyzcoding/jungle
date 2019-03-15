@@ -37,7 +37,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User login(User user) {
-        Map<String, Object> map = new HashMap<>(2);
         user = userMapper.selectOne(user);
         if (user == null) {
             return null;
