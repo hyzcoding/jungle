@@ -10,6 +10,16 @@ spring:
   thymeleaf:
     cache: false
     mode: LEGACYHTML5
+#  redis:
+#    host:  xxx.xxx.x.xx
+#    database: 8
+#    jedis:
+#      pool:
+#        max-active: 8
+#        min-idle: 1
+#        max-idle: 1
+#        max-wait: -1
+
 mybatis:
   typeAliasesPackage: com.nightriver.jungle.common.pojo
   mapper-locations: classpath:mapping/*.xml

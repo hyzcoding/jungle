@@ -20,3 +20,5 @@ zuul:
     static:
       path: /static/**
       url: http://localhost:9002/static/
+  sensitive-headers:
+  add-host-header: true

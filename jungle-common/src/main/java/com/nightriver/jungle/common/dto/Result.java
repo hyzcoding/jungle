@@ -1,6 +1,7 @@
 package com.nightriver.jungle.common.dto;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
 /**
  * 〈RESTFUL返回标准格式DTO〉<br>
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
  * @create 2019/3/7
  * @since 1.0.0
  */
+@Component
 public class Result<T> {
     private HttpStatus code = HttpStatus.OK;
     private String message;

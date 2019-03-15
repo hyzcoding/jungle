@@ -1,8 +1,7 @@
-package com.nightriver.jungle.gateway.config;
+package com.nightriver.jungle.common.config;
 
-import com.nightriver.jungle.common.dto.Result;
 import com.nightriver.jungle.common.pojo.User;
-import com.nightriver.jungle.user.api.UserService;
+import com.nightriver.jungle.common.service.SsoService;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -25,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class MyShiroRealm extends AuthorizingRealm {
     Logger logger = LoggerFactory.getLogger(MyShiroRealm.class);
     @Autowired
-    UserService userService;
+    SsoService ssoService;
 
     /**
      * 授权
@@ -38,7 +37,9 @@ public class MyShiroRealm extends AuthorizingRealm {
         logger.info("权限配置-->MyShiroRealm.doGetAuthorizationInfo()");
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         User user = (User) principalCollection.getPrimaryPrincipal();
+        logger.info("user对象："+user.toString());
         authorizationInfo.addRole(user.getUserRole());
+        authorizationInfo.addStringPermission(user.getUserRole());
         return authorizationInfo;
     }
 
@@ -58,8 +59,7 @@ public class MyShiroRealm extends AuthorizingRealm {
         //实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
         User user = new User();
         user.setUserEml(userEml);
-        Result<User> result = userService.login(user);
-        User userDb = result.getData();
+        User userDb = ssoService.login(user);
         logger.info("----->>userInfo=" + userDb.getUserPwd());
         if (userDb == null) {
             return null;

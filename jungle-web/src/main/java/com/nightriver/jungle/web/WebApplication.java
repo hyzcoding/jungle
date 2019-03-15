@@ -1,5 +1,6 @@
 package com.nightriver.jungle.web;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -15,10 +16,10 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * @create 2019/3/6
  * @since 1.0.0
  */
-@SpringBootApplication(scanBasePackages = {"com.nightriver.jungle"},
-        exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
+@SpringBootApplication(scanBasePackages = {"com.nightriver.jungle"})
 @EnableEurekaClient
 @EnableFeignClients(basePackages =  {"com.nightriver.jungle"})
+@MapperScan("com.nightriver.jungle.common.dao")
 public class WebApplication {
     public static void main(String[] args) {
         SpringApplication.run(WebApplication.class, args);

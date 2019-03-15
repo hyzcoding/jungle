@@ -8,12 +8,13 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
-import java.util.Map;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -31,6 +32,7 @@ public class UserController {
     @RequestMapping(value = "index")
     public String index() {
         Subject subject = SecurityUtils.getSubject();
+        System.out.println(subject.hasRole("ADMIN"));
         User user = (User)subject.getPrincipal();
         System.out.println(user);
         return "/index";
@@ -69,15 +71,15 @@ public class UserController {
         }
         if (error != null) {
             // 出错了，返回登录页面
-            return "/login";
+            return "/web/login";
         }
         if (userDb != null) {
             Result<UserInfo> userInfoResult = userService.get(userDb.getUserId());
             UserInfo userInfo = userInfoResult.getData();
             session.setAttribute("userInfo",userInfo);
-            return "/index";
+            return "redirect:/web/index";
         } else {
-            return "/login";
+            return "/web/login";
         }
     }
 }
