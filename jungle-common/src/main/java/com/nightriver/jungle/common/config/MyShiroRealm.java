@@ -1,5 +1,6 @@
 package com.nightriver.jungle.common.config;
 
+import com.nightriver.jungle.common.dto.JwtToken;
 import com.nightriver.jungle.common.pojo.User;
 import com.nightriver.jungle.common.service.SsoService;
 import org.apache.shiro.authc.AuthenticationException;
@@ -41,6 +42,12 @@ public class MyShiroRealm extends AuthorizingRealm {
         authorizationInfo.addRole(user.getUserRole());
         authorizationInfo.addStringPermission(user.getUserRole());
         return authorizationInfo;
+    }
+
+
+    @Override
+    public boolean supports(AuthenticationToken token) {
+        return token instanceof JwtToken;
     }
 
     /**
