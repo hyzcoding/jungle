@@ -5,12 +5,12 @@ import com.google.common.base.Strings;
 import com.nightriver.jungle.common.dto.Result;
 import com.nightriver.jungle.common.pojo.User;
 import com.nightriver.jungle.common.pojo.UserInfo;
+import com.nightriver.jungle.common.util.JwtUtil;
 import com.nightriver.jungle.common.util.MailUtil;
 import com.nightriver.jungle.common.util.Role;
 import com.nightriver.jungle.common.util.ValidatorUtil;
 import com.nightriver.jungle.user.service.UserService;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.mybatis.logging.Logger;
@@ -20,9 +20,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -136,7 +133,12 @@ public class UserController {
     @RequiresRoles("ADMIN")
     public Result add(@RequestBody User user) {
         Result result = new Result();
-        userService.login(user);
+        UserInfo userInfo = new UserInfo();
+        try {
+            userService.register(user,userInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return result;
     }
 
@@ -147,12 +149,15 @@ public class UserController {
      * @return 返回结果
      */
     @PostMapping("/login")
-    public Result<User> login(@RequestBody User user) {
-        Result<User> result = new Result<>();
+    public Result<String> login(@RequestBody User user) {
+        Result<String> result = new Result<>();
         result.setCode(HttpStatus.OK);
         result.setMessage("登录成功");
         User userDb = userService.login(user);
-        result.setData(userDb);
+        if(userDb != null){
+            String token = JwtUtil.sign(userDb.getUserEml(),userDb.getUserRole(), userDb.getUserPwd());
+            result.setData(token);
+        }
         return result;
     }
 
@@ -213,8 +218,8 @@ public class UserController {
      * @param userInfo 用户详细信息
      * @return 修改的用户详细信息
      */
-    @PatchMapping("/userInfo")
-    @RequiresRoles({"USER", "MODERATOR", "ADMIN"})
+    @PatchMapping("/userinfo")
+    @RequiresRoles("USER")
     public Result modifyInfo(@RequestBody UserInfo userInfo) {
         Result result = new Result();
         User user = (User) SecurityUtils.getSubject().getPrincipal();

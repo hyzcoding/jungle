@@ -1,17 +1,19 @@
 package com.nightriver.jungle.common.config;
 
-import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
+import org.apache.shiro.mgt.DefaultSubjectDAO;
+import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
+import org.springframework.context.annotation.DependsOn;
 
-import java.util.LinkedHashMap;
+import javax.servlet.Filter;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -25,87 +27,74 @@ import java.util.Properties;
 @Configuration
 public class ShiroConfig {
 
-    @Bean
-    public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {
-        System.out.println("ShiroConfiguration.shirFilter()");
-        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-        shiroFilterFactoryBean.setSecurityManager(securityManager);
-        //拦截器.
-        Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
-        // 配置不会被拦截的链接 顺序判断
-        filterChainDefinitionMap.put("/static/**", "anon");
-        //配置退出 过滤器,其中的具体的退出代码Shiro已经替我们实现了
-//        filterChainDefinitionMap.put("/web/logout", "logout");
-        // filterChainDefinitionMap.put("/register", "register");
+    @Bean("securityManager")
+    public DefaultWebSecurityManager getManager(MyShiroRealm realm) {
+        DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
+        // 使用自己的realm
+        manager.setRealm(realm);
 
-        // 过滤链定义，从上向下顺序执行，一般将/**放在最为下边 :这是一个坑呢，一不小心代码就不好使了;
-        //  authc:所有url都必须认证通过才可以访问; anon:所有url都都可以匿名访问
+        /*
+         * 关闭shiro自带的session，详情见文档
+         * http://shiro.apache.org/session-management.html#SessionManagement-StatelessApplications%28Sessionless%29
+         */
+        DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
+        DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
+        defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
+        subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
+        manager.setSubjectDAO(subjectDAO);
 
-//        filterChainDefinitionMap.put("/userInfo/**", "authc");
-        filterChainDefinitionMap.put("/swagger-ui.html","authc,roles[ADMIN]");
-//        filterChainDefinitionMap.put("/web/index","authc");
-        // 如果不设置默认会自动寻找Web工程根目录下的"/login.jsp"页面
-        shiroFilterFactoryBean.setLoginUrl("/web/login");
-        // 登录成功后要跳转的链接
-//       shiroFilterFactoryBean.setSuccessUrl("/web/index");
-        //未授权界面;
-//        shiroFilterFactoryBean.setUnauthorizedUrl("/response/responseMsg");
-        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
-        return shiroFilterFactoryBean;
+        return manager;
     }
 
-    @Bean
-    public MyShiroRealm myShiroRealm() {
-        MyShiroRealm myShiroRealm = new MyShiroRealm();
-        return myShiroRealm;
+    @Bean("shiroFilter")
+    public ShiroFilterFactoryBean factory(DefaultWebSecurityManager securityManager) {
+        ShiroFilterFactoryBean factoryBean = new ShiroFilterFactoryBean();
+
+        // 添加自己的过滤器并且取名为jwt
+        Map<String, Filter> filterMap = new HashMap<>();
+        filterMap.put("jwt", new JwtFilter());
+        factoryBean.setFilters(filterMap);
+
+        factoryBean.setSecurityManager(securityManager);
+        factoryBean.setUnauthorizedUrl("/401");
+
+        /*
+         * 自定义url规则
+         * http://shiro.apache.org/web.html#urls-
+         */
+        Map<String, String> filterRuleMap = new HashMap<>(2);
+        // 所有请求通过我们自己的JWT Filter
+        filterRuleMap.put("/login", "anon");
+        filterRuleMap.put("/**", "jwt");
+        // 访问401和404页面不通过我们的Filter
+        filterRuleMap.put("/401", "anon");
+        factoryBean.setFilterChainDefinitionMap(filterRuleMap);
+        return factoryBean;
     }
-
-
-    @Bean
-    public SecurityManager securityManager() {
-        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        securityManager.setRealm(myShiroRealm());
-        return securityManager;
-    }
-
 
     /**
-     * 开启shiro aop注解支持.
-     * 使用代理方式;所以需要开启代码支持;
-     *
-     * @param securityManager
-     * @return
+     * 下面的代码是添加注解支持
      */
     @Bean
-    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
-        AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
-        authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
-        return authorizationAttributeSourceAdvisor;
+    @DependsOn("lifecycleBeanPostProcessor")
+    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+        DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
+        // 强制使用cglib，防止重复代理和可能引起代理出错的问题
+        // https://zhuanlan.zhihu.com/p/29161098
+        defaultAdvisorAutoProxyCreator.setProxyTargetClass(true);
+        return defaultAdvisorAutoProxyCreator;
     }
 
     @Bean
-    public DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator() {
-        DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
-        advisorAutoProxyCreator.setProxyTargetClass(true);
-        return advisorAutoProxyCreator;
+    public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
+        return new LifecycleBeanPostProcessor();
     }
-    @Bean(name = "simpleMappingExceptionResolver")
-    public SimpleMappingExceptionResolver
-    createSimpleMappingExceptionResolver() {
-        SimpleMappingExceptionResolver r = new SimpleMappingExceptionResolver();
-        Properties mappings = new Properties();
-        //数据库异常处理
-        mappings.setProperty("DatabaseException", "databaseError");
-        //无权限跳入的方法
-        mappings.setProperty("UnauthorizedException", "/response/responseMsg");
-        // None by default
-        r.setExceptionMappings(mappings);
-        // No default
-        r.setDefaultErrorView("error");
-        // Default is "exception"
-        r.setExceptionAttribute("ex");
-        // No default
-        // r.setWarnLogCategory("example.MvcLogger");
-        return r;
+
+    @Bean
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(DefaultWebSecurityManager securityManager) {
+        AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();
+        advisor.setSecurityManager(securityManager);
+        return advisor;
     }
+
 }
