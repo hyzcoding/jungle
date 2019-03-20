@@ -104,6 +104,5 @@ public class JwtUtil {
                 .withClaim("userId",user.getUserId())
                 .withExpiresAt(date)
                 .sign(algorithm);
-
     }
 }

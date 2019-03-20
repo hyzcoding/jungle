@@ -2,6 +2,7 @@ package com.nightriver.jungle.common.config;
 
 import com.nightriver.jungle.common.dto.JwtToken;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -11,13 +12,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * oauth2拦截器，现在改为 JWT 认证
+ * JwtFilter，现在改为 JWT 认证
  * 〈 〉
  *
  * @author hyz
  * @create 2019/3/18
  * @since 1.0.0
  */
+@Configuration
 public class JwtFilter extends BasicHttpAuthenticationFilter {
 
 
@@ -47,9 +49,9 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String token = httpServletRequest.getHeader("Authorization");
 
-        JwtToken jwtToken = new JwtToken(token);
-        // 提交给realm进行登入，如果错误他会抛出异常并被捕获
-        getSubject(request, response).login(jwtToken);
+            JwtToken jwtToken = new JwtToken(token);
+            // 提交给realm进行登入，如果错误他会抛出异常并被捕获
+            getSubject(request, response).login(jwtToken);
         // 如果没有抛出异常则代表登入成功，返回true
         return true;
     }

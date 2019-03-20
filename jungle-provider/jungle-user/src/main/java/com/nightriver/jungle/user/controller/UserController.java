@@ -155,7 +155,7 @@ public class UserController {
         result.setMessage("登录成功");
         User userDb = userService.login(user);
         if(userDb != null){
-            String token = JwtUtil.sign(userDb.getUserEml(),userDb.getUserRole(), userDb.getUserPwd());
+            String token = JwtUtil.sign(user);
             result.setData(token);
         }
         return result;
@@ -222,9 +222,11 @@ public class UserController {
     @RequiresRoles("USER")
     public Result modifyInfo(@RequestBody UserInfo userInfo) {
         Result result = new Result();
-        User user = (User) SecurityUtils.getSubject().getPrincipal();
-        if (Role.USER.equals(user.getUserRole())) {
-            userInfo.setUserId(user.getUserId());
+        String token =  (String) SecurityUtils.getSubject().getPrincipal();
+        String userRole = JwtUtil.getRole(token);
+        String userId = JwtUtil.getId(token);
+        if (Role.USER.equals(userRole)) {
+            userInfo.setUserId(Integer.valueOf(userId));
         }
         try {
             userService.modifyInfo(userInfo);
@@ -246,7 +248,7 @@ public class UserController {
      * @return 结果
      */
     @PatchMapping("/user4pwd")
-    @RequiresRoles({"USER", "MODERATOR", "ADMIN"})
+    @RequiresRoles("USER")
     public Result modifyPwd(@RequestBody User user) {
         Result result = new Result();
         if (Role.USER.equals(user.getUserRole())) {
@@ -280,7 +282,7 @@ public class UserController {
      * @return 结果
      */
     @PatchMapping("/user")
-    @RequiresRoles({"USER", "MODERATOR", "ADMIN"})
+    @RequiresRoles("USER")
     public Result<User> modify(@RequestBody User user) {
         Result<User> result = new Result();
         result.setMessage("修改成功");
@@ -301,7 +303,7 @@ public class UserController {
      * @return 结果
      */
     @DeleteMapping("/user")
-    @RequiresRoles({"ADMIN"})
+    @RequiresRoles("ADMIN")
     public Result remove(@RequestParam("id") int id) {
         Result result = new Result();
         try {
