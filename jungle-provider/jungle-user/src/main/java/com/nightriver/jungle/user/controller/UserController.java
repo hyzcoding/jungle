@@ -16,6 +16,7 @@ import org.apache.shiro.subject.Subject;
 import org.mybatis.logging.Logger;
 import org.mybatis.logging.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -37,8 +38,10 @@ public class UserController {
     UserService userService;
     @Autowired
     private JavaMailSender mailSender;
-    //    @Value("${spring.mail.from}")
-    private String from = "hyz951226";
+
+    private Subject subject;
+    @Value("${spring.mail.from}")
+    private String from;
 
     /**
      * 获取验证码
@@ -135,7 +138,7 @@ public class UserController {
         Result result = new Result();
         UserInfo userInfo = new UserInfo();
         try {
-            userService.register(user,userInfo);
+            userService.register(user, userInfo);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -154,7 +157,7 @@ public class UserController {
         result.setCode(HttpStatus.OK);
         result.setMessage("登录成功");
         User userDb = userService.login(user);
-        if(userDb != null){
+        if (userDb != null) {
             String token = JwtUtil.sign(user);
             result.setData(token);
         }
@@ -193,7 +196,6 @@ public class UserController {
     }
 
     /**
-     *
      * @param keyWords
      * @param pageNum
      * @return
@@ -218,15 +220,14 @@ public class UserController {
      * @param userInfo 用户详细信息
      * @return 修改的用户详细信息
      */
-    @PatchMapping("/userinfo")
+    @PatchMapping("/info")
     @RequiresRoles("USER")
     public Result modifyInfo(@RequestBody UserInfo userInfo) {
         Result result = new Result();
-        String token =  (String) SecurityUtils.getSubject().getPrincipal();
-        String userRole = JwtUtil.getRole(token);
-        String userId = JwtUtil.getId(token);
-        if (Role.USER.equals(userRole)) {
-            userInfo.setUserId(Integer.valueOf(userId));
+        subject = SecurityUtils.getSubject();
+        User user = checkRole(subject);
+        if (Role.USER.equals(user.getUserRole())) {
+            userInfo.setUserId(user.getUserId());
         }
         try {
             userService.modifyInfo(userInfo);
@@ -251,11 +252,13 @@ public class UserController {
     @RequiresRoles("USER")
     public Result modifyPwd(@RequestBody User user) {
         Result result = new Result();
-        if (Role.USER.equals(user.getUserRole())) {
-            user.setUserId(user.getUserId());
+        subject = SecurityUtils.getSubject();
+        User loginUser = checkRole(subject);
+        if (loginUser.getUserRole().equals(Role.USER) && !loginUser.getUserId().equals(user.getUserId()) ) {
+            result.setMessage("没有权限");
+            result.setCode(HttpStatus.UNAUTHORIZED);
+            return result;
         }
-        result.setMessage("修改成功");
-        result.setCode(HttpStatus.OK);
         User userTmep = new User();
         userTmep.setUserId(user.getUserId());
         userTmep.setUserPwd(user.getUserPwd());
@@ -266,12 +269,12 @@ public class UserController {
             result.setMessage("修改失败");
             result.setCode(HttpStatus.BAD_REQUEST);
         }
-        Subject subject = SecurityUtils.getSubject();
-        User userSecurity = (User) subject.getPrincipal();
-        //判断是否是用户
-        if (userSecurity.getUserId().equals(userTmep.getUserId())) {
+        //判断是否是用户,如果是则需要重新登录
+        if (loginUser.getUserId().equals(userTmep.getUserId())) {
             subject.logout();
         }
+        result.setMessage("修改成功");
+        result.setCode(HttpStatus.OK);
         return result;
     }
 
@@ -282,9 +285,9 @@ public class UserController {
      * @return 结果
      */
     @PatchMapping("/user")
-    @RequiresRoles("USER")
+    @RequiresRoles("ADMIN")
     public Result<User> modify(@RequestBody User user) {
-        Result<User> result = new Result();
+        Result<User> result = new Result<>();
         result.setMessage("修改成功");
         try {
             result.setData(userService.modify(user));
@@ -323,5 +326,19 @@ public class UserController {
             result.setData(false);
         }
         return result;
+    }
+
+    /**
+     * 判断用户登录角色
+     * @param subject
+     * @return
+     */
+    private static User checkRole(Subject subject) {
+        User user = new User();
+        String token = (String) subject.getPrincipal();
+        user.setUserEml(JwtUtil.getEml(token));
+        user.setUserRole(JwtUtil.getRole(token));
+        user.setUserId(Integer.valueOf(JwtUtil.getId(token)));
+        return user;
     }
 }

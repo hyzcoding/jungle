@@ -11,10 +11,11 @@
 
     <artifactId>jungle-article</artifactId>
     <dependencies>
+
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-hadoop</artifactId>
-            <version>2.5.0.RELEASE</version>
+            <artifactId>jungle-common</artifactId>
+            <groupId>com.nightriver</groupId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

@@ -6,6 +6,7 @@ import com.nightriver.jungle.article.service.ArticleService;
 import com.nightriver.jungle.common.dao.ArticleMapper;
 import com.nightriver.jungle.common.pojo.Article;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ import java.util.List;
  * @create 2019/3/12
  * @since 1.0.0
  */
+@Service
 public class ArticleServiceImpl implements ArticleService {
 
     @Autowired

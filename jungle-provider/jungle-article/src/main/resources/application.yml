@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: jungle-article
+  profiles:
+    active: dev
+  datasource:
+    username: root
+    password: root
+server:
+  port: 9003
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/

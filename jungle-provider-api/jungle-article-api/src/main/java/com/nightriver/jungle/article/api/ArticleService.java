@@ -1,0 +1,68 @@
+package com.nightriver.jungle.article.api;
+
+import com.nightriver.jungle.common.dto.Result;
+import com.nightriver.jungle.common.pojo.Article;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.*;
+
+/**
+ * 〈一句话功能简述〉<br>
+ * 〈 〉
+ *
+ * @author hyz
+ * @create 2019/3/12
+ * @since 1.0.0
+ */
+@FeignClient("jungle-article")
+@Service
+public interface ArticleService {
+    /**
+     * 上传
+     * @return
+     */
+    @PostMapping("/upload")
+    Result upload();
+
+    /**
+     * 添加
+     * @param article
+     * @return
+     */
+    @PostMapping("/add")
+    Result add(@RequestBody Article article);
+
+    /**
+     * 刪除
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/del")
+    Result remove(@RequestParam("id") int id);
+
+    /**
+     * 修改
+     * @param article
+     * @return
+     */
+    @PatchMapping("/update")
+    Result update(@RequestBody Article article);
+
+    /**
+     * 获取
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    Result get(@PathVariable("id") int id);
+
+    /**
+     * 条件查询
+     * @param pageSize
+     * @param pageNum
+     * @param keywords
+     * @return
+     */
+    @GetMapping("/list")
+    Result getList(int pageSize, int pageNum, String keywords);
+}

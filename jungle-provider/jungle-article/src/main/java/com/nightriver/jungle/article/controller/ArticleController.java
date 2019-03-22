@@ -4,15 +4,22 @@ import com.github.pagehelper.PageInfo;
 import com.nightriver.jungle.article.service.ArticleService;
 import com.nightriver.jungle.common.dto.Result;
 import com.nightriver.jungle.common.pojo.Article;
-import com.nightriver.jungle.common.pojo.User;
+import com.nightriver.jungle.common.util.JwtUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+
 
 /**
- * 〈一句话功能简述〉<br>
+ * 〈ArticleController〉<br>
  * 〈 〉
  *
  * @author hyz
@@ -20,31 +27,75 @@ import org.springframework.web.bind.annotation.*;
  * @since 1.0.0
  */
 @RestController
+@CrossOrigin
 public class ArticleController {
-
+    Logger logger = LoggerFactory.getLogger(ArticleController.class);
     @Autowired
     ArticleService articleService;
 
     @PostMapping("/upload")
-    @RequiresRoles({"USER", "MODERATOR", "ADMIN"})
-    public Result upload() {
+    @RequiresRoles("USER")
+    public Result upload(@RequestParam("file") MultipartFile file) {
         Result result = new Result();
-        //TODO  上传文件
+        if (file.isEmpty()) {
+            result.setCode(HttpStatus.BAD_REQUEST);
+            result.setMessage("文件为空");
+            return result;
+        }
+
+        // 获取文件名
+        String fileName = file.getOriginalFilename();
+        logger.info("上传的文件名为：" + fileName);
+
+        // 获取文件的后缀名
+        String suffixName = fileName.substring(fileName.lastIndexOf("."));
+        logger.info("上传的后缀名为：" + suffixName);
+
+        // 文件上传路径
+        String filePath = "E://";
+
+        // 解决中文问题，liunx下中文路径，图片显示问题
+        // fileName = UUID.randomUUID() + suffixName;
+
+        File dest = new File(filePath + fileName);
+
+        // 检测是否存在目录
+        if (!dest.getParentFile().exists()) {
+            dest.getParentFile().mkdirs();
+        }
+
+        try {
+            file.transferTo(dest);
+            result.setCode(HttpStatus.OK);
+            result.setMessage("上传成功");
+            result.setData("filePath + fileName");
+            return result;
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //TODO 上传文件
+        //TODO 存储文件
+        //TODO 返回链接
+        result.setCode(HttpStatus.BAD_REQUEST);
+        result.setMessage("上传失败");
         return result;
     }
 
     @PostMapping("/add")
-    @RequiresRoles({"USER", "MODERATOR", "ADMIN"})
+    @RequiresRoles("USER")
     public Result add(@RequestBody Article article) {
-        User user = (User) SecurityUtils.getSubject().getPrincipal();
-        article.setUserId(user.getUserId());
+        String token = (String) SecurityUtils.getSubject().getPrincipal();
+        String userId = JwtUtil.getId(token);
+        article.setUserId(Integer.valueOf(userId));
         Result result = new Result();
         //TODO 添加文件
         return result;
     }
 
     @DeleteMapping("/del")
-    @RequiresRoles({"MODERATOR", "ADMIN"})
+    @RequiresRoles("MODERATOR")
     public Result remove(@RequestParam("id") int id) {
         Result result = new Result();
         try {
@@ -62,7 +113,7 @@ public class ArticleController {
     }
 
     @PatchMapping("/update")
-    @RequiresRoles({"USER", "MODERATOR", "ADMIN"})
+    @RequiresRoles("USER")
     public Result update(@RequestBody Article article) {
         Result result = new Result();
         try {

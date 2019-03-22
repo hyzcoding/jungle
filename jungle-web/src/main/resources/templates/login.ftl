@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>login</title>
+        <title>登录</title>
         <script src="/static/jquery.min.js"></script>
         <script type="application/javascript">
         </script>

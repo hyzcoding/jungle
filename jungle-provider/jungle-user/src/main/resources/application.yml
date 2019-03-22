@@ -8,7 +8,7 @@ spring:
     password: root
   mail:
     host: smtp.163.com
-    form: hyz951226
+    from: hyz951226
     default-encoding: UTF-8
     username:  hyz804762373@163.com
     password:  hyz951226

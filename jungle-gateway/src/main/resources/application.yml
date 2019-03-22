@@ -16,6 +16,7 @@ zuul:
   # ignoredServices: '*'
   routes:
     jungle-user: /user/**
+    jungle-article: /article/**
     jungle-web: /web/**
     static:
       path: /static/**
