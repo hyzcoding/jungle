@@ -5,8 +5,7 @@
         <title>首页</title>
     </head>
     <body>
-        <shiro:hasRole name="ADMIN">欢迎
-            [<shiro:principal property="userEml"/>]
-        </shiro:hasRole>
+        <#include "nav.ftl">
+        <#include "foot.ftl">
     </body>
 </html>

@@ -5,6 +5,7 @@
         <title>搜索</title>
     </head>
     <body>
-        
+        <#include "nav.ftl">
+        <#include "foot.ftl">
     </body>
 </html>

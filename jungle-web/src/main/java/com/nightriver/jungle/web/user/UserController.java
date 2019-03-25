@@ -32,9 +32,7 @@ public class UserController {
     @RequestMapping(value = "index")
     public String index() {
         Subject subject = SecurityUtils.getSubject();
-        System.out.println(subject.hasRole("ADMIN"));
         User user = (User)subject.getPrincipal();
-        System.out.println(user);
         return "/index";
     }
 
