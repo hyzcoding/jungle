@@ -2,25 +2,34 @@ package com.nightriver.jungle.user.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.google.common.base.Strings;
+import com.google.gson.Gson;
 import com.nightriver.jungle.common.dto.Result;
 import com.nightriver.jungle.common.pojo.User;
 import com.nightriver.jungle.common.pojo.UserInfo;
-import com.nightriver.jungle.common.util.JwtUtil;
-import com.nightriver.jungle.common.util.MailUtil;
-import com.nightriver.jungle.common.util.Role;
-import com.nightriver.jungle.common.util.ValidatorUtil;
+import com.nightriver.jungle.common.util.*;
 import com.nightriver.jungle.user.service.UserService;
+import com.qiniu.common.QiniuException;
+import com.qiniu.common.Zone;
+import com.qiniu.http.Response;
+import com.qiniu.storage.Configuration;
+import com.qiniu.storage.UploadManager;
+import com.qiniu.storage.model.DefaultPutRet;
+import com.qiniu.util.Auth;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
-import org.mybatis.logging.Logger;
-import org.mybatis.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.FileInputStream;
+import java.io.IOException;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -33,7 +42,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController()
 @CrossOrigin
 public class UserController {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
     UserService userService;
     @Autowired
@@ -42,6 +52,14 @@ public class UserController {
     private Subject subject;
     @Value("${spring.mail.from}")
     private String from;
+    @Value("${qiniu.accessKey}")
+    private String accessKey;
+    @Value("${qiniu.secretKey}")
+    private String secretKey;
+    @Value("${qiniu.bucket}")
+    private String bucket;
+    @Value("${qiniu.path}")
+    private String path;
 
     /**
      * 获取验证码
@@ -196,6 +214,8 @@ public class UserController {
     }
 
     /**
+     * 模糊搜索
+     *
      * @param keyWords
      * @param pageNum
      * @return
@@ -254,7 +274,7 @@ public class UserController {
         Result result = new Result();
         subject = SecurityUtils.getSubject();
         User loginUser = checkRole(subject);
-        if (loginUser.getUserRole().equals(Role.USER) && !loginUser.getUserId().equals(user.getUserId()) ) {
+        if (loginUser.getUserRole().equals(Role.USER) && !loginUser.getUserId().equals(user.getUserId())) {
             result.setMessage("没有权限");
             result.setCode(HttpStatus.UNAUTHORIZED);
             return result;
@@ -329,7 +349,81 @@ public class UserController {
     }
 
     /**
+     * 上传用户头像
+     *
+     * @param avatar
+     * @return
+     */
+    @PostMapping("/upload")
+    @RequiresRoles("USER")
+    public Result upload(@RequestParam("avatar") MultipartFile avatar) {
+        Result result = new Result();
+        if (avatar.isEmpty()) {
+            result.setCode(HttpStatus.BAD_REQUEST);
+            result.setMessage("图片为空");
+            return result;
+        }
+        try {
+            //上传图片
+            FileInputStream inputStream = (FileInputStream) avatar.getInputStream();
+            // KeyUtil.genUniqueKey()生成图片的随机名
+            String path = uploadQNImg(inputStream, KeyUtil.genUniqueKey());
+            // 获取文件名
+            result.setCode(HttpStatus.OK);
+            result.setMessage("上传成功");
+            result.setData(path);
+            return result;
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //TODO 上传文件
+        //TODO 存储文件
+        //TODO 返回链接
+        result.setCode(HttpStatus.BAD_REQUEST);
+        result.setMessage("上传失败");
+        return result;
+    }
+
+    /**
+     * 将图片上传到七牛云
+     */
+    private String uploadQNImg(FileInputStream file, String key) {
+        // 构造一个带指定Zone对象的配置类
+        Configuration cfg = new Configuration(Zone.zone2());
+        // 其他参数参考类注释
+        UploadManager uploadManager = new UploadManager(cfg);
+        // 生成上传凭证，然后准备上传
+
+        try {
+            Auth auth = Auth.create(accessKey, secretKey);
+            String upToken = auth.uploadToken(bucket);
+            try {
+                Response response = uploadManager.put(file, key, upToken, null, null);
+                // 解析上传成功的结果
+                DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
+
+                String returnPath = path + "/" + putRet.key;
+                return returnPath;
+            } catch (QiniuException ex) {
+                Response r = ex.response;
+                System.err.println(r.toString());
+                try {
+                    System.err.println(r.bodyString());
+                } catch (QiniuException ex2) {
+                    //ignore
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    /**
      * 判断用户登录角色
+     *
      * @param subject
      * @return
      */

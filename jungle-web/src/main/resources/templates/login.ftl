@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>登录</title>
-        <script src="/static/jquery.min.js"></script>
+        <script src="/static/js/jquery.min.js"></script>
         <script type="application/javascript">
         </script>
     </head>
