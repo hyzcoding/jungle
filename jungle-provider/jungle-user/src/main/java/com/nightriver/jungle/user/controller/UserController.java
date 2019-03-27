@@ -2,19 +2,11 @@ package com.nightriver.jungle.user.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.google.common.base.Strings;
-import com.google.gson.Gson;
 import com.nightriver.jungle.common.dto.Result;
 import com.nightriver.jungle.common.pojo.User;
 import com.nightriver.jungle.common.pojo.UserInfo;
 import com.nightriver.jungle.common.util.*;
 import com.nightriver.jungle.user.service.UserService;
-import com.qiniu.common.QiniuException;
-import com.qiniu.common.Zone;
-import com.qiniu.http.Response;
-import com.qiniu.storage.Configuration;
-import com.qiniu.storage.UploadManager;
-import com.qiniu.storage.model.DefaultPutRet;
-import com.qiniu.util.Auth;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
@@ -48,18 +40,13 @@ public class UserController {
     UserService userService;
     @Autowired
     private JavaMailSender mailSender;
+    @Autowired
+    private QiNiuUtil qiNiuUtil;
 
     private Subject subject;
     @Value("${spring.mail.from}")
     private String from;
-    @Value("${qiniu.accessKey}")
-    private String accessKey;
-    @Value("${qiniu.secretKey}")
-    private String secretKey;
-    @Value("${qiniu.bucket}")
-    private String bucket;
-    @Value("${qiniu.path}")
-    private String path;
+
 
     /**
      * 获取验证码
@@ -176,7 +163,8 @@ public class UserController {
         result.setMessage("登录成功");
         User userDb = userService.login(user);
         if (userDb != null) {
-            String token = JwtUtil.sign(user);
+            System.out.println(userDb.getUserId());
+            String token = JwtUtil.sign(userDb);
             result.setData(token);
         }
         return result;
@@ -357,6 +345,8 @@ public class UserController {
     @PostMapping("/upload")
     @RequiresRoles("USER")
     public Result upload(@RequestParam("avatar") MultipartFile avatar) {
+        subject = SecurityUtils.getSubject();
+        User loginUser = checkRole(subject);
         Result result = new Result();
         if (avatar.isEmpty()) {
             result.setCode(HttpStatus.BAD_REQUEST);
@@ -366,8 +356,8 @@ public class UserController {
         try {
             //上传图片
             FileInputStream inputStream = (FileInputStream) avatar.getInputStream();
-            // KeyUtil.genUniqueKey()生成图片的随机名
-            String path = uploadQNImg(inputStream, KeyUtil.genUniqueKey());
+            // KeyUtil.getUniqueKey()生成图片的随机名
+            String path = qiNiuUtil.uploadQNImg(inputStream, loginUser.getUserId()+"_"+KeyUtil.getUniqueKey(16));
             // 获取文件名
             result.setCode(HttpStatus.OK);
             result.setMessage("上传成功");
@@ -384,41 +374,6 @@ public class UserController {
         result.setCode(HttpStatus.BAD_REQUEST);
         result.setMessage("上传失败");
         return result;
-    }
-
-    /**
-     * 将图片上传到七牛云
-     */
-    private String uploadQNImg(FileInputStream file, String key) {
-        // 构造一个带指定Zone对象的配置类
-        Configuration cfg = new Configuration(Zone.zone2());
-        // 其他参数参考类注释
-        UploadManager uploadManager = new UploadManager(cfg);
-        // 生成上传凭证，然后准备上传
-
-        try {
-            Auth auth = Auth.create(accessKey, secretKey);
-            String upToken = auth.uploadToken(bucket);
-            try {
-                Response response = uploadManager.put(file, key, upToken, null, null);
-                // 解析上传成功的结果
-                DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
-
-                String returnPath = path + "/" + putRet.key;
-                return returnPath;
-            } catch (QiniuException ex) {
-                Response r = ex.response;
-                System.err.println(r.toString());
-                try {
-                    System.err.println(r.bodyString());
-                } catch (QiniuException ex2) {
-                    //ignore
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
     }
 
     /**

@@ -79,10 +79,10 @@ public class JwtUtil {
      *
      * @return token中包含的用户名
      */
-    public static String getId(String token) {
+    public static Integer getId(String token) {
         try {
             DecodedJWT jwt = JWT.decode(token);
-            return jwt.getClaim("userId").asString();
+            return jwt.getClaim("userId").asInt();
         } catch (JWTDecodeException e) {
             return null;
         }
