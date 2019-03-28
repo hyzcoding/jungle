@@ -82,7 +82,7 @@ public interface UserService {
     Result<UserInfo> getInfo(@PathVariable("id") Integer id);
 
     /**
-     * 通过用户id查找用户详情
+     * 通过用户id查找用户
      *
      * @param id
      * @return
@@ -99,7 +99,7 @@ public interface UserService {
 //    int findCount(UserInfo userInfo);
 
     /**
-     *
+     * 搜索
      * @param keyWords
      * @param pageNum
      * @return

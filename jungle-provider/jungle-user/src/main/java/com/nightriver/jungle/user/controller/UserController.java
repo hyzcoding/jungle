@@ -26,13 +26,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
- * 〈一句话功能简述〉<br>
- * 〈 〉
- *
- * @author hyz
- * @create 2019/3/6
- * @since 1.0.0
- */
+ * @Description:
+ * @Author:         hyz
+ * @CreateDate:     2019/3/28
+ * @Version:        1.0
+ **/
 @RestController()
 @CrossOrigin
 public class UserController {
@@ -166,7 +164,6 @@ public class UserController {
         result.setMessage("登录成功");
         User userDb = userService.login(user);
         if (userDb != null) {
-            System.out.println(userDb.getUserId());
             String token = JwtUtil.sign(userDb);
             result.setData(token);
         }

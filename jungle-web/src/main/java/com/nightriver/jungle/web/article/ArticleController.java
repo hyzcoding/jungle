@@ -31,13 +31,15 @@ public class ArticleController {
 
     @PostMapping("/upload")
     @ResponseBody
-    public Map upload(@RequestParam("file") MultipartFile[] files){
-        Result result = articleService.upload(files);
+    public String upload(@RequestParam("file") String file){
+        Result result = new Result();
+        System.out.println(file);
+//        Result result = articleService.upload(file);
         Map map = new HashMap(2);
         map.put("errno",0);
         map.put("data",result.getData());
         JSONObject json = new JSONObject(map);
-        return json;
+        return result.getData().toString();
     }
 
 

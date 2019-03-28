@@ -43,29 +43,23 @@ public class ArticleController {
 
     @PostMapping("/upload")
     @RequiresRoles("USER")
-    public Result upload(MultipartFile[] files) {
+    public Result upload(@RequestParam("file") MultipartFile file) {
         subject = SecurityUtils.getSubject();
         User loginUser = JwtUtil.checkRole(subject);
         Result result = new Result();
-        if (files.length<= 0) {
-            throw new NullPointerException();
+        if (file.isEmpty()) {
+            result.setCode(HttpStatus.BAD_REQUEST);
+            result.setMessage("内容为空");
+            return result;
         }
         try {
-            MultipartFile file;
-            String[] paths = new String[files.length];
-            for(int i = 0; i<paths.length; i++){
-                file = files[i];
-                //上传图片
-                FileInputStream inputStream = (FileInputStream) file.getInputStream();
-                // KeyUtil.getUniqueKey()生成图片的随机名
-                String path = qiNiuUtil.uploadQNImg(inputStream, loginUser.getUserId() + "-article-" + KeyUtil.getUniqueKey(16));
-                // 获取文件名
-                paths[i] = path;
-            }
-
+            //上传图片
+            FileInputStream inputStream = (FileInputStream) file.getInputStream();
+            // KeyUtil.getUniqueKey()生成文章的随机名
+            String path = qiNiuUtil.uploadQNImg(inputStream, loginUser.getUserId() + "-article-" + KeyUtil.getUniqueKey(16));
+            // 获取文件名
             result.setCode(HttpStatus.OK);
-            result.setMessage("上传成功");
-            result.setData(paths);
+            result.setData(path);
             return result;
         } catch (IllegalStateException e) {
             e.printStackTrace();

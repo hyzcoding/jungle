@@ -21,11 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public interface ArticleService {
     /**
-     * @param files
+     * @param file
      * @return
      */
     @PostMapping(name = "/upload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    Result upload(@RequestParam("file") MultipartFile[] files);
+    Result upload(@RequestParam("file") MultipartFile file);
 
     /**
      * 添加
