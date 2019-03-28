@@ -11,9 +11,6 @@ import java.util.Random;
  * @since 1.0.0
  */
 public class KeyUtil {
-    public static void main(String[] args) {
-        System.out.println( getUniqueKey(15));
-    }
 
     public static String getUniqueKey(int n){
         String val = "";

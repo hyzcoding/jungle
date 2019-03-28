@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.nightriver.jungle.common.pojo.User;
+import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -104,5 +105,19 @@ public class JwtUtil {
                 .withClaim("userId",user.getUserId())
                 .withExpiresAt(date)
                 .sign(algorithm);
+    }
+    /**
+     * 判断用户登录角色
+     *
+     * @param subject
+     * @return
+     */
+    public static User checkRole(Subject subject) {
+        User user = new User();
+        String token = (String) subject.getPrincipal();
+        user.setUserEml(JwtUtil.getEml(token));
+        user.setUserRole(JwtUtil.getRole(token));
+        user.setUserId(Integer.valueOf(JwtUtil.getId(token)));
+        return user;
     }
 }

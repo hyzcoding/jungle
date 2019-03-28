@@ -3,11 +3,13 @@ package com.nightriver.jungle.user.controller;
 import com.github.pagehelper.PageInfo;
 import com.google.common.base.Strings;
 import com.nightriver.jungle.common.dto.Result;
+import com.nightriver.jungle.common.exception.NotExistException;
 import com.nightriver.jungle.common.pojo.User;
 import com.nightriver.jungle.common.pojo.UserInfo;
 import com.nightriver.jungle.common.util.*;
 import com.nightriver.jungle.user.service.UserService;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.ShiroException;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
@@ -47,6 +49,7 @@ public class UserController {
     @Value("${spring.mail.from}")
     private String from;
 
+    private static String imageView = "imageView2/1/w/50/h/50/format/jpg/q/75|imageslim";
 
     /**
      * 获取验证码
@@ -192,12 +195,38 @@ public class UserController {
      * @return
      */
     @GetMapping("/user/{id}")
-    public Result<UserInfo> findById(@PathVariable("id") Integer id) {
+    @RequiresRoles("USER")
+    public Result<User> findById(@PathVariable("id") Integer id) {
+        subject = SecurityUtils.getSubject();
+        User loginUser = JwtUtil.checkRole(subject);
+        if (loginUser.getUserRole().equals(Role.USER) && !loginUser.getUserId().equals(id)) {
+            throw new ShiroException();
+        }
         Result result = new Result();
-        UserInfo userInfo = userService.findById(id);
+        User user = userService.findById(id);
         result.setCode(HttpStatus.OK);
         result.setMessage("获取成功");
-        result.setData(userInfo);
+        result.setData(user);
+        return result;
+    }
+
+    /**
+     * 通过用户id查找用户详情
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/info/{id}")
+    public Result<UserInfo> findInfoById(@PathVariable("id") Integer id) throws Exception {
+        Result result = new Result();
+        UserInfo userInfo = userService.findInfoById(id);
+        if(userInfo == null){
+            throw new NotExistException("用户不存在");
+        }else {
+            result.setCode(HttpStatus.OK);
+            result.setMessage("获取成功");
+            result.setData(userInfo);
+        }
         return result;
     }
 
@@ -233,7 +262,7 @@ public class UserController {
     public Result modifyInfo(@RequestBody UserInfo userInfo) {
         Result result = new Result();
         subject = SecurityUtils.getSubject();
-        User user = checkRole(subject);
+        User user = JwtUtil.checkRole(subject);
         if (Role.USER.equals(user.getUserRole())) {
             userInfo.setUserId(user.getUserId());
         }
@@ -261,7 +290,7 @@ public class UserController {
     public Result modifyPwd(@RequestBody User user) {
         Result result = new Result();
         subject = SecurityUtils.getSubject();
-        User loginUser = checkRole(subject);
+        User loginUser = JwtUtil.checkRole(subject);
         if (loginUser.getUserRole().equals(Role.USER) && !loginUser.getUserId().equals(user.getUserId())) {
             result.setMessage("没有权限");
             result.setCode(HttpStatus.UNAUTHORIZED);
@@ -346,7 +375,7 @@ public class UserController {
     @RequiresRoles("USER")
     public Result upload(@RequestParam("avatar") MultipartFile avatar) {
         subject = SecurityUtils.getSubject();
-        User loginUser = checkRole(subject);
+        User loginUser = JwtUtil.checkRole(subject);
         Result result = new Result();
         if (avatar.isEmpty()) {
             result.setCode(HttpStatus.BAD_REQUEST);
@@ -357,11 +386,11 @@ public class UserController {
             //上传图片
             FileInputStream inputStream = (FileInputStream) avatar.getInputStream();
             // KeyUtil.getUniqueKey()生成图片的随机名
-            String path = qiNiuUtil.uploadQNImg(inputStream, loginUser.getUserId()+"_"+KeyUtil.getUniqueKey(16));
+            String path = qiNiuUtil.uploadQNImg(inputStream, loginUser.getUserId() + "-" + KeyUtil.getUniqueKey(16));
             // 获取文件名
             result.setCode(HttpStatus.OK);
             result.setMessage("上传成功");
-            result.setData(path);
+            result.setData(path + "?" + imageView);
             return result;
         } catch (IllegalStateException e) {
             e.printStackTrace();
@@ -374,20 +403,5 @@ public class UserController {
         result.setCode(HttpStatus.BAD_REQUEST);
         result.setMessage("上传失败");
         return result;
-    }
-
-    /**
-     * 判断用户登录角色
-     *
-     * @param subject
-     * @return
-     */
-    private static User checkRole(Subject subject) {
-        User user = new User();
-        String token = (String) subject.getPrincipal();
-        user.setUserEml(JwtUtil.getEml(token));
-        user.setUserRole(JwtUtil.getRole(token));
-        user.setUserId(Integer.valueOf(JwtUtil.getId(token)));
-        return user;
     }
 }

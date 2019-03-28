@@ -4,9 +4,13 @@ import com.github.pagehelper.PageInfo;
 import com.nightriver.jungle.article.service.ArticleService;
 import com.nightriver.jungle.common.dto.Result;
 import com.nightriver.jungle.common.pojo.Article;
+import com.nightriver.jungle.common.pojo.User;
 import com.nightriver.jungle.common.util.JwtUtil;
+import com.nightriver.jungle.common.util.KeyUtil;
+import com.nightriver.jungle.common.util.QiNiuUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 
@@ -32,43 +36,36 @@ public class ArticleController {
     Logger logger = LoggerFactory.getLogger(ArticleController.class);
     @Autowired
     ArticleService articleService;
+    @Autowired
+    private QiNiuUtil qiNiuUtil;
+
+    private Subject subject;
 
     @PostMapping("/upload")
     @RequiresRoles("USER")
-    public Result upload(@RequestParam("file") MultipartFile file) {
+    public Result upload(MultipartFile[] files) {
+        subject = SecurityUtils.getSubject();
+        User loginUser = JwtUtil.checkRole(subject);
         Result result = new Result();
-        if (file.isEmpty()) {
-            result.setCode(HttpStatus.BAD_REQUEST);
-            result.setMessage("文件为空");
-            return result;
+        if (files.length<= 0) {
+            throw new NullPointerException();
         }
-
-        // 获取文件名
-        String fileName = file.getOriginalFilename();
-        logger.info("上传的文件名为：" + fileName);
-
-        // 获取文件的后缀名
-        String suffixName = fileName.substring(fileName.lastIndexOf("."));
-        logger.info("上传的后缀名为：" + suffixName);
-
-        // 文件上传路径
-        String filePath = "E://";
-
-        // 解决中文问题，liunx下中文路径，图片显示问题
-        // fileName = UUID.randomUUID() + suffixName;
-
-        File dest = new File(filePath + fileName);
-
-        // 检测是否存在目录
-        if (!dest.getParentFile().exists()) {
-            dest.getParentFile().mkdirs();
-        }
-
         try {
-            file.transferTo(dest);
+            MultipartFile file;
+            String[] paths = new String[files.length];
+            for(int i = 0; i<paths.length; i++){
+                file = files[i];
+                //上传图片
+                FileInputStream inputStream = (FileInputStream) file.getInputStream();
+                // KeyUtil.getUniqueKey()生成图片的随机名
+                String path = qiNiuUtil.uploadQNImg(inputStream, loginUser.getUserId() + "-article-" + KeyUtil.getUniqueKey(16));
+                // 获取文件名
+                paths[i] = path;
+            }
+
             result.setCode(HttpStatus.OK);
             result.setMessage("上传成功");
-            result.setData("filePath + fileName");
+            result.setData(paths);
             return result;
         } catch (IllegalStateException e) {
             e.printStackTrace();
@@ -87,8 +84,8 @@ public class ArticleController {
     @RequiresRoles("USER")
     public Result add(@RequestBody Article article) {
         String token = (String) SecurityUtils.getSubject().getPrincipal();
-        String userId = JwtUtil.getId(token);
-        article.setUserId(Integer.valueOf(userId));
+        int userId = JwtUtil.getId(token);
+        article.setUserId(userId);
         Result result = new Result();
         //TODO 添加文件
         return result;
@@ -140,7 +137,9 @@ public class ArticleController {
     }
 
     @GetMapping("/list")
-    public Result getList(int pageSize, int pageNum, String keywords) {
+    public Result getList(@RequestParam("pageSize") int pageSize,
+                          @RequestParam("pageNum") int pageNum,
+                          @RequestParam("keywords") String keywords){
         Result result = new Result();
         Article article = new Article();
         article.setArticleTitle(keywords);
@@ -150,4 +149,5 @@ public class ArticleController {
         result.setMessage("获取成功");
         return result;
     }
+
 }

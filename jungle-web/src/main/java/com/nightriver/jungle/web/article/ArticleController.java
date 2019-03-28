@@ -1,6 +1,18 @@
 package com.nightriver.jungle.web.article;
 
+import com.alibaba.fastjson.JSONObject;
+import com.nightriver.jungle.article.api.ArticleService;
+import com.nightriver.jungle.common.dto.Result;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -11,7 +23,22 @@ import org.springframework.stereotype.Controller;
  * @since 1.0.0
  */
 @Controller
+@RequestMapping("/article")
 public class ArticleController {
+
+    @Autowired
+    ArticleService articleService;
+
+    @PostMapping("/upload")
+    @ResponseBody
+    public Map upload(@RequestParam("file") MultipartFile[] files){
+        Result result = articleService.upload(files);
+        Map map = new HashMap(2);
+        map.put("errno",0);
+        map.put("data",result.getData());
+        JSONObject json = new JSONObject(map);
+        return json;
+    }
 
 
 }

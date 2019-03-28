@@ -1,13 +1,13 @@
 package com.nightriver.jungle.user.api;
 
+import com.nightriver.jungle.common.config.JwtFeignInterceptor;
 import com.nightriver.jungle.common.dto.Result;
 import com.nightriver.jungle.common.pojo.User;
 import com.nightriver.jungle.common.pojo.UserInfo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -17,7 +17,7 @@ import java.util.List;
  * @create 2019/3/5
  * @since 1.0.0
  */
-@FeignClient("jungle-user")
+@FeignClient(name="jungle-user",configuration = JwtFeignInterceptor.class)
 @Service
 public interface UserService {
     /**
@@ -61,7 +61,7 @@ public interface UserService {
      * @return 返回结果
      */
     @PostMapping("/login")
-    Result<User> login(@RequestBody User user);
+    Result<String> login(@RequestBody User user);
 
     /**
      * 用户退出登录
@@ -78,10 +78,17 @@ public interface UserService {
      * @param id
      * @return
      */
+    @GetMapping("/info/{id}")
+    Result<UserInfo> getInfo(@PathVariable("id") Integer id);
+
+    /**
+     * 通过用户id查找用户详情
+     *
+     * @param id
+     * @return
+     */
     @GetMapping("/user/{id}")
-    Result<UserInfo> get(@PathVariable("id") Integer id);
-
-
+    Result<User> get(@PathVariable("id") Integer id);
 
     /**
      * 查询符合条件的总数量
@@ -138,4 +145,13 @@ public interface UserService {
      */
     @DeleteMapping("/user")
     Result remove(@RequestParam("id") int id);
+
+    /**
+     * 上传用户头像
+     *
+     * @param avatar
+     * @return
+     */
+    @PostMapping("/upload")
+    Result upload(@RequestParam("avatar") MultipartFile avatar);
 }

@@ -17,6 +17,13 @@ public class Result<T> {
     private String message;
     private T data;
 
+    public static Result fail(HttpStatus code,String message) {
+        Result result = new Result<>();
+        result.setCode(code);
+        result.setMessage(message);
+        return result;
+    }
+
     public HttpStatus getCode() {
         return code;
     }

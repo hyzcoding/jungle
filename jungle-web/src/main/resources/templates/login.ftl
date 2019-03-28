@@ -8,7 +8,7 @@
         </script>
     </head>
     <body>
-        <form action="/web/login" method="post">
+        <form action="/login" method="post">
             邮箱： <input type="text" name="userEml"/>
             密码： <input type="password" name="userPwd">
             <input type="submit" value="提交">

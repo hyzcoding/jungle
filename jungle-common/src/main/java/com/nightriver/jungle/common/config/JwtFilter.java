@@ -86,11 +86,10 @@ public class JwtFilter extends UserFilter {
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
         if (logger.isErrorEnabled()) {
             logger.error("account need login for: {}", ((HttpServletRequest) request).getServletPath());
+            logger.info(((HttpServletRequest) request).getHeader("Authorization"));
             response.setContentType("application/json;charset=UTF-8");
-            Result result = new Result();
+            Result result = Result.fail(HttpStatus.UNAUTHORIZED,"没有权限");
             ((HttpServletResponse) response).setStatus(401);
-            result.setCode(HttpStatus.UNAUTHORIZED);
-            result.setMessage("没有权限");
             response.getWriter().write(JSONObject.toJSONString(result));
         }
 

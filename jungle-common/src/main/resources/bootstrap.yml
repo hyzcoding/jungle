@@ -23,6 +23,12 @@ spring:
 mybatis:
   typeAliasesPackage: com.nightriver.jungle.common.pojo
   mapper-locations: classpath:mapping/*.xml
+#七牛云
+qiniu:
+  accessKey: 4m0UMJhUKqJhbARflthYfPv4n9tgHpjo8xfH2OSN
+  secretKey: grwq64DWBbnt_vIBsiXIF6NCECqIbvjRwz2RI8f9
+  bucket: jungle
+  path: http://poyxf28eo.bkt.clouddn.com
 # 打印SQL语句
 logging:
   level:

@@ -10,9 +10,7 @@ import com.nightriver.jungle.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Description:
@@ -46,7 +44,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInfo findById(Integer id) {
+    public User findById(Integer id) {
+        return userMapper.selectById(id);
+    }
+
+    @Override
+    public UserInfo findInfoById(Integer id) {
         return userInfoMapper.selectById(id);
     }
 

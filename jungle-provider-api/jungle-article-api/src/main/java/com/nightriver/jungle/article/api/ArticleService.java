@@ -1,10 +1,13 @@
 package com.nightriver.jungle.article.api;
 
+import com.nightriver.jungle.common.config.JwtFeignInterceptor;
 import com.nightriver.jungle.common.dto.Result;
 import com.nightriver.jungle.common.pojo.Article;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -14,18 +17,19 @@ import org.springframework.web.bind.annotation.*;
  * @create 2019/3/12
  * @since 1.0.0
  */
-@FeignClient("jungle-article")
+@FeignClient(name="jungle-article",configuration = JwtFeignInterceptor.class)
 @Service
 public interface ArticleService {
     /**
-     * 上传
+     * @param files
      * @return
      */
-    @PostMapping("/upload")
-    Result upload();
+    @PostMapping(name = "/upload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    Result upload(@RequestParam("file") MultipartFile[] files);
 
     /**
      * 添加
+     *
      * @param article
      * @return
      */
@@ -34,6 +38,7 @@ public interface ArticleService {
 
     /**
      * 刪除
+     *
      * @param id
      * @return
      */
@@ -42,6 +47,7 @@ public interface ArticleService {
 
     /**
      * 修改
+     *
      * @param article
      * @return
      */
@@ -50,6 +56,7 @@ public interface ArticleService {
 
     /**
      * 获取
+     *
      * @param id
      * @return
      */
@@ -58,11 +65,14 @@ public interface ArticleService {
 
     /**
      * 条件查询
+     *
      * @param pageSize
      * @param pageNum
      * @param keywords
      * @return
      */
     @GetMapping("/list")
-    Result getList(int pageSize, int pageNum, String keywords);
+    Result getList(@RequestParam("pageSize") int pageSize,
+                   @RequestParam("pageNum") int pageNum,
+                   @RequestParam("keywords") String keywords);
 }

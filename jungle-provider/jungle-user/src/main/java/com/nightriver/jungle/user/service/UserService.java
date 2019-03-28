@@ -31,11 +31,18 @@ public interface UserService {
     User login(User user);
 
     /**
+     * 通过用户id查找用户
+     * @param id
+     * @return
+     */
+    User findById(Integer id);
+
+    /**
      * 通过用户id查找用户详情
      * @param id
      * @return
      */
-    UserInfo findById(Integer id);
+    UserInfo findInfoById(Integer id);
 
     /**
      * 查询符合条件的总数量
