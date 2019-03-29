@@ -66,6 +66,9 @@ public class ShiroConfig {
         // 所有请求通过我们自己的JWT Filter
         filterRuleMap.put("/login", "anon");
         filterRuleMap.put("/editor","anon");
+        filterRuleMap.put("/index","anon");
+        filterRuleMap.put("/","anon");
+        filterRuleMap.put("/article/details","anon");
         filterRuleMap.put("/static/**","anon");
         filterRuleMap.put("/webjars/**","anon");
         filterRuleMap.put("/swagger**/**","anon");

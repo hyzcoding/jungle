@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,9 +42,9 @@ public class ArticleController {
 
     private Subject subject;
 
-    @PostMapping("/upload")
+    @PostMapping(name = "/upload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @RequiresRoles("USER")
-    public Result upload(@RequestParam("file") MultipartFile file) {
+    public Result upload(@RequestPart("file") MultipartFile file) {
         subject = SecurityUtils.getSubject();
         User loginUser = JwtUtil.checkRole(subject);
         Result result = new Result();

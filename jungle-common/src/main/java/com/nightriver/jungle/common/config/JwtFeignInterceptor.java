@@ -23,7 +23,6 @@ public class JwtFeignInterceptor implements RequestInterceptor {
 
     private final String TOKEN_HEADER = "authorization";
 
-
     @Override
     public void apply(RequestTemplate template) {
         template.header(TOKEN_HEADER, getHeaders(getHttpServletRequest()).get(TOKEN_HEADER));

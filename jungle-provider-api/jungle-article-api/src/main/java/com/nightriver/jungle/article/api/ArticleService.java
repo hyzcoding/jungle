@@ -21,11 +21,12 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public interface ArticleService {
     /**
+     * 上传文件
      * @param file
      * @return
      */
-    @PostMapping(name = "/upload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    Result upload(@RequestParam("file") MultipartFile file);
+    @PostMapping(name = "/upload",produces = {MediaType.APPLICATION_JSON_UTF8_VALUE},consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    Result upload(@RequestPart("file") MultipartFile file);
 
     /**
      * 添加
@@ -75,4 +76,5 @@ public interface ArticleService {
     Result getList(@RequestParam("pageSize") int pageSize,
                    @RequestParam("pageNum") int pageNum,
                    @RequestParam("keywords") String keywords);
+
 }

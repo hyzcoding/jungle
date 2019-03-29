@@ -22,11 +22,10 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @RequestMapping(value = "index")
+    @RequestMapping(value = {"index","/"})
     public String index() {
         return "/index";
     }
-
     @RequestMapping(value = "editor")
     public String editor() {
         return "/editor";
@@ -46,7 +45,7 @@ public class UserController {
         user.setUserPwd(userPwd);
         String token = userService.login(user).getData();
         session.setAttribute("token",token);
-        return "/index";
+        return "redirect:/index";
     }
 
     @GetMapping("/user/{id}")

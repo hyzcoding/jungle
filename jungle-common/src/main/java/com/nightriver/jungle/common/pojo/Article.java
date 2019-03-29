@@ -15,22 +15,39 @@ import java.util.Date;
  **/
 @Entity
 public class Article implements Serializable {
+    /**
+     * 文章id
+     */
     @Id
     @GeneratedValue
     private Integer articleId;
-
+    /**
+     * 文章标题
+     */
     private String articleTitle;
-
+    /**
+     * 文章内容链接
+     */
     private String articleContent;
-
+    /**
+     * 文章观看数量
+     */
     private Integer articleViews;
-
+    /**
+     * 文章创建时间
+     */
     private Date articleCreate;
-
+    /**
+     * 文章板块
+     */
     private Byte articleForum;
-
+    /**
+     * 文章点赞数
+     */
     private Integer articleLikes;
-
+    /**
+     * 提交用户id
+     */
     private Integer userId;
 
     public Integer getArticleId() {
