@@ -4,6 +4,8 @@
         <meta charset="UTF-8">
         <title>登录</title>
         <script src="/static/js/jquery.min.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/static/css/commons.css ">
         <script type="application/javascript">
         </script>
     </head>
