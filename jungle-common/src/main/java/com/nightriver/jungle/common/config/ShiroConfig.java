@@ -13,6 +13,7 @@ import org.springframework.context.annotation.DependsOn;
 
 import javax.servlet.Filter;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -62,21 +63,25 @@ public class ShiroConfig {
          * 自定义url规则
          * http://shiro.apache.org/web.html#urls-
          */
-        Map<String, String> filterRuleMap = new HashMap<>(2);
+        Map<String, String> filterRuleMap = new LinkedHashMap<>(10);
         // 所有请求通过我们自己的JWT Filter
+        filterRuleMap.put("/register", "anon");
         filterRuleMap.put("/login", "anon");
         filterRuleMap.put("/editor","anon");
         filterRuleMap.put("/index","anon");
+        filterRuleMap.put("/vcode**","anon");
         filterRuleMap.put("/","anon");
         filterRuleMap.put("/article/details","anon");
         filterRuleMap.put("/static/**","anon");
-        filterRuleMap.put("/webjars/**","anon");
-        filterRuleMap.put("/swagger**/**","anon");
+        filterRuleMap.put("/webjars/**/**/**","anon");
+        filterRuleMap.put("/swagger**","anon");
+        filterRuleMap.put("/**/swagger**/**","anon");
         filterRuleMap.put("/v2/**","anon");
         filterRuleMap.put("/favicon.ico","anon");
-        filterRuleMap.put("/**", "jwt");
         // 访问401和404页面不通过我们的Filter
         filterRuleMap.put("/401", "anon");
+        filterRuleMap.put("/error", "anon");
+        filterRuleMap.put("/**", "jwt");
         factoryBean.setFilterChainDefinitionMap(filterRuleMap);
         return factoryBean;
     }

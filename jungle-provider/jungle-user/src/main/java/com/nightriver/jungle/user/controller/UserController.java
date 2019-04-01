@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Description:
@@ -42,6 +44,11 @@ public class UserController {
     private JavaMailSender mailSender;
     @Autowired
     private QiNiuUtil qiNiuUtil;
+    /**
+     *  可以写很多类型的值
+     */
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     private Subject subject;
     @Value("${spring.mail.from}")
@@ -56,7 +63,7 @@ public class UserController {
      * @return 返回结果
      */
     @GetMapping("/vcode")
-    public Result vCode(String email) {
+    public Result vCode(@RequestParam("email") String email) {
         Result result = new Result();
         //查询邮箱是否合法
         if (ValidatorUtil.isEmail(email)) {
@@ -66,10 +73,11 @@ public class UserController {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(from);
             message.setTo(email);
-            message.setSubject("主题：jungle 注册验证码");
+            message.setSubject("jungle 注册验证码");
             message.setText(code);
-            mailSender.send(message);
+//            mailSender.send(message);
             result.setMessage("发送验证码成功");
+            stringRedisTemplate.opsForValue().set(email,code,300, TimeUnit.SECONDS);
             result.setCode(HttpStatus.OK);
             result.setData(code);
         } else {
@@ -89,14 +97,14 @@ public class UserController {
      * @param vcode    验证码
      * @return 返回结果
      */
-    @PostMapping("/register")
+    @RequestMapping(name = "/register",method = RequestMethod.POST)
     public Result register(@RequestParam("name") String name,
                            @RequestParam("password") String password,
                            @RequestParam("email") String email,
                            @RequestParam("sex") Integer sex,
-                           @RequestParam("vcode") String vcode,
-                           @RequestParam("dbvcode") String dbvcode) {
+                           @RequestParam("vcode") String vcode) throws Exception {
         Result result = new Result();
+        String dbvcode = stringRedisTemplate.opsForValue().get(email);
         //后端验证有效性
         User user = new User();
         UserInfo userInfo = new UserInfo();
@@ -118,7 +126,7 @@ public class UserController {
         } else if (!ValidatorUtil.isPassword(password.trim())) {
             result.setMessage("密码不合法");
             result.setCode(HttpStatus.BAD_REQUEST);
-        } else if (!dbvcode.equals(vcode.trim())) {
+        } else if (Strings.isNullOrEmpty(dbvcode) || !dbvcode.equals(vcode.trim())) {
             result.setMessage("验证码错误");
             result.setCode(HttpStatus.BAD_REQUEST);
         } else {
@@ -126,6 +134,7 @@ public class UserController {
             user.setUserPwd(password);
             userInfo.setUserName(name);
             userInfo.setUserSex(sex.byteValue());
+            userService.register(user,userInfo);
             result.setCode(HttpStatus.OK);
             result.setMessage("注册成功！");
             result.setData("/login");

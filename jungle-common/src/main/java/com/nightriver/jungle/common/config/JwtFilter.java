@@ -48,7 +48,11 @@ public class JwtFilter extends UserFilter {
     }
 
     /**
-     *
+     * 鉴权
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
      */
     protected boolean executeLogin(ServletRequest request, ServletResponse response) throws Exception {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;

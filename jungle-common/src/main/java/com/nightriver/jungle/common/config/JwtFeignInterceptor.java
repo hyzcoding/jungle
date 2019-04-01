@@ -44,7 +44,6 @@ public class JwtFeignInterceptor implements RequestInterceptor {
             String value = request.getHeader(key);
             map.put(key, value);
         }
-        System.out.println(map);
         return map;
     }
 }
