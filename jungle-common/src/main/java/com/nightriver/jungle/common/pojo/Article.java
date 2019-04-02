@@ -1,6 +1,7 @@
 package com.nightriver.jungle.common.pojo;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +15,7 @@ import java.util.Date;
  * @Version: 1.0
  **/
 @Entity
+@Document(indexName = "article", type = "article")
 public class Article implements Serializable {
     /**
      * 文章id

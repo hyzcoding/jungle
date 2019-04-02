@@ -31,6 +31,10 @@
                     标题：
                     <input id="title" type="text"/>
                 </div>
+                <div>
+                    板块：
+                    <input id="forum" type="text"/>
+                </div>
                 <div class="wangEditor">
                     <div id="div1" class="toolbar">
                     </div>
@@ -66,6 +70,8 @@
                 var formData = new FormData();
                 var file = new Blob([editor.txt.html()]);
                 formData.append("file", file);
+                formData.append("title",$('#title'));
+                formData.append("forum",$('#forum'));
                 $.ajax({
                     headers: {
                         "Authorization": '${Session["token"]!""}'

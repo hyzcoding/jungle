@@ -1,0 +1,21 @@
+jungle-eureka:
+  image: jungle/jungle-eureka
+  hostname: jungle-eureka
+  ports:
+    - "8761:8761"
+
+jungle-article:
+  image:  jungle/jungle-article
+  ports:
+    - "9003:9003"
+  links:
+    - "jungle-eureka"
+    - "jungle-article"
+
+jungle-user:
+  image:  jungle/jungle-user
+  ports:
+    - "9001:9001"
+  links:
+    - "jungle-eureka"
+    - "jungle-user"

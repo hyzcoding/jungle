@@ -17,6 +17,7 @@ spring:
     expose-session-attributes: true
     request-context-attribute: request
     suffix: .ftl
+
   mvc:
     static-path-pattern: /static/**
 eureka:
@@ -29,3 +30,6 @@ hystrix:
       execution:
         isolation:
           strategy: SEMAPHORE
+feign:
+  hystrix:
+    enabled: true

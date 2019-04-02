@@ -4,6 +4,7 @@ import com.nightriver.jungle.common.config.JwtFeignInterceptor;
 import com.nightriver.jungle.common.dto.Result;
 import com.nightriver.jungle.common.pojo.User;
 import com.nightriver.jungle.common.pojo.UserInfo;
+import com.nightriver.jungle.user.api.impl.UserHystrix;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @create 2019/3/5
  * @since 1.0.0
  */
-@FeignClient(name="jungle-user",configuration = JwtFeignInterceptor.class)
+@FeignClient(name="jungle-user",configuration = JwtFeignInterceptor.class,fallback = UserHystrix.class)
 @Service
 public interface UserService {
     /**

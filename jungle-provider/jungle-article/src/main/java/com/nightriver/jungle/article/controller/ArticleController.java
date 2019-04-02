@@ -44,7 +44,7 @@ public class ArticleController {
 
     @PostMapping(name = "/upload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @RequiresRoles("USER")
-    public Result upload(@RequestPart("file") MultipartFile file) {
+    public Result<String> upload(@RequestPart("file") MultipartFile file) {
         subject = SecurityUtils.getSubject();
         User loginUser = JwtUtil.checkRole(subject);
         Result result = new Result();
@@ -54,7 +54,7 @@ public class ArticleController {
             return result;
         }
         try {
-            //上传图片
+            //上传文件
             FileInputStream inputStream = (FileInputStream) file.getInputStream();
             // KeyUtil.getUniqueKey()生成文章的随机名
             String path = qiNiuUtil.uploadQNImg(inputStream, loginUser.getUserId() + "-article-" + KeyUtil.getUniqueKey(16));
@@ -77,12 +77,14 @@ public class ArticleController {
 
     @PostMapping("/add")
     @RequiresRoles("USER")
-    public Result add(@RequestBody Article article) {
+    public Result add(@RequestBody Article article) throws Exception {
         String token = (String) SecurityUtils.getSubject().getPrincipal();
         int userId = JwtUtil.getId(token);
         article.setUserId(userId);
+        articleService.add(article);
         Result result = new Result();
-        //TODO 添加文件
+        result.setCode(HttpStatus.OK);
+        result.setMessage("添加成功");
         return result;
     }
 

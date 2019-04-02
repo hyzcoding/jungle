@@ -1,8 +1,7 @@
 spring:
   application:
     name: jungle-article
-  profiles:
-    active: dev
+  profiles: docker
   datasource:
     username: root
     password: root

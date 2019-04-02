@@ -73,9 +73,9 @@ public class UserController {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(from);
             message.setTo(email);
-            message.setSubject("jungle 注册验证码");
-            message.setText(code);
-//            mailSender.send(message);
+            message.setSubject("JUNGLE 注册验证码");
+            message.setText(MailUtil.html(code));
+            mailSender.send(message);
             result.setMessage("发送验证码成功");
             stringRedisTemplate.opsForValue().set(email,code,300, TimeUnit.SECONDS);
             result.setCode(HttpStatus.OK);

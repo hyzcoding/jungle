@@ -1,8 +1,9 @@
 spring:
   application:
     name: jungle-user
-  profiles:
-    active: dev
+  profiles: docker
+#  profiles:
+#    active: dev
   datasource:
     username: root
     password: root

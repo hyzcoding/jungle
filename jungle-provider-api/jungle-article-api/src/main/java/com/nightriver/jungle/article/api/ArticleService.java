@@ -1,5 +1,6 @@
 package com.nightriver.jungle.article.api;
 
+import com.nightriver.jungle.article.api.impl.ArticleHystrix;
 import com.nightriver.jungle.common.config.JwtFeignInterceptor;
 import com.nightriver.jungle.common.dto.Result;
 import com.nightriver.jungle.common.pojo.Article;
@@ -17,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @create 2019/3/12
  * @since 1.0.0
  */
-@FeignClient(name="jungle-article",configuration = JwtFeignInterceptor.class)
+@FeignClient(name="jungle-article",configuration = JwtFeignInterceptor.class,fallback = ArticleHystrix.class)
 @Service
 public interface ArticleService {
     /**
@@ -26,7 +27,7 @@ public interface ArticleService {
      * @return
      */
     @PostMapping(name = "/upload",produces = {MediaType.APPLICATION_JSON_UTF8_VALUE},consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    Result upload(@RequestPart("file") MultipartFile file);
+    Result<String> upload(@RequestPart("file") MultipartFile file);
 
     /**
      * 添加
@@ -35,7 +36,7 @@ public interface ArticleService {
      * @return
      */
     @PostMapping("/add")
-    Result add(@RequestBody Article article);
+    Result<String> add(@RequestBody Article article);
 
     /**
      * 刪除
@@ -67,9 +68,9 @@ public interface ArticleService {
     /**
      * 条件查询
      *
-     * @param pageSize
-     * @param pageNum
-     * @param keywords
+     * @param pageSize 页面大小
+     * @param pageNum 页数
+     * @param keywords 关键字
      * @return
      */
     @GetMapping("/list")
