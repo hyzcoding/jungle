@@ -1,5 +1,5 @@
 spring:
-  profiles: docker
+#  profiles: docker
   application:
     name: jungle-eureka
 
