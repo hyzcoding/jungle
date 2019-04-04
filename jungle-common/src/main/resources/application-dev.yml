@@ -23,8 +23,8 @@ spring:
   elasticsearch:
     jest:
       uris:
-        - # ES
-        - http://localhost:9200
+        # ES
+        http://localhost:9200
       read-timeout: 5000
 mybatis:
   typeAliasesPackage: com.nightriver.jungle.common.pojo
