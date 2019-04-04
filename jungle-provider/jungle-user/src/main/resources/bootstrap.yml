@@ -14,3 +14,13 @@ spring:
       discovery:
         service-id: jungle-config
         enabled: true
+    bus:
+      enabled: true
+      trace:
+        enabled: true
+management:
+  endpoint:
+  endpoints:
+    web:
+      exposure:
+        include: bus-refresh

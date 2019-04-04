@@ -16,6 +16,14 @@ spring:
           #配置文件所在的目录
           search-paths: /jungle-common/**
       label: master
+    bus:
+      trace:
+        enabled: true
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: root
+    password: root
 #加入注册中心，实现高可用
 eureka:
   client:

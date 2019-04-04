@@ -4,6 +4,11 @@ spring:
 #  profiles: docker
 #  profiles:
 #    active: dev
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: root
+    password: root
   mail:
     host: smtp.163.com
     from: hyz804762373@163.com
