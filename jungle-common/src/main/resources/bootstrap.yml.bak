@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    config:
+      label: master
+      profile: jungle--dev.yml
+      uri: http://localhost:7000/
+      discovery:
+        service-id: jungle-config
+        enabled: true
