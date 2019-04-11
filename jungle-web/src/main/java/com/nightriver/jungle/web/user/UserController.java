@@ -1,5 +1,6 @@
 package com.nightriver.jungle.web.user;
 
+import com.google.common.base.Strings;
 import com.nightriver.jungle.common.dto.Result;
 import com.nightriver.jungle.common.pojo.User;
 import com.nightriver.jungle.user.api.UserService;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpSession;
  */
 @Controller
 public class UserController {
+    private final String TOKEN_SESSION = "token";
     @Autowired
     UserService userService;
 
@@ -27,8 +29,16 @@ public class UserController {
         return "/index";
     }
     @RequestMapping(value = "editor")
-    public String editor() {
-        return "/editor";
+    public String editor(HttpSession session) {
+        //判断是否登录
+
+        //如果登录
+        if(!Strings.isNullOrEmpty(session.getAttribute(TOKEN_SESSION).toString())){
+            return "/editor";
+        }
+
+        //如果未登录
+        return "redirect:/index";
     }
 
     @GetMapping(value = "/login")
@@ -44,7 +54,7 @@ public class UserController {
         user.setUserEml(userEml);
         user.setUserPwd(userPwd);
         String token = userService.login(user).getData();
-        session.setAttribute("token",token);
+        session.setAttribute(TOKEN_SESSION,token);
         return "redirect:/index";
     }
 

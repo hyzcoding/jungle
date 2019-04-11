@@ -8,7 +8,9 @@
     </head>
     <body>
         <#include "nav.ftl">
-        <div class="contenter"></div>
+        <div class="contenter">
+
+        </div>
         <#include "foot.ftl">
         <script type="text/javascript" src="/static/js/jquery.min.js"></script>
         <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>

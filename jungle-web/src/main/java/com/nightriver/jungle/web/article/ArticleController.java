@@ -50,6 +50,16 @@ public class ArticleController {
        }
         return "提交失败";
     }
-
-
+    @GetMapping("/all")
+    public Result getList(int pageNum){
+        return articleService.getList(10,pageNum,null);
+    }
+    @GetMapping("/user")
+    public Result getListByUser(@RequestParam("pn")int pageNum,@RequestParam("userId") int userId){
+        return articleService.getListByWhere(10,pageNum,userId,null);
+    }
+    @GetMapping("/forum")
+    public Result getListByForum(@RequestParam("pn")int pageNum,@RequestParam("forum") Byte forum){
+        return articleService.getListByWhere(10,pageNum,0,forum);
+    }
 }

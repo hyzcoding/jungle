@@ -42,6 +42,11 @@ public class ArticleController {
 
     private Subject subject;
 
+    /**
+     * 上传文章文件
+     * @param file 文件
+     * @return 结果
+     */
     @PostMapping(name = "/upload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @RequiresRoles("USER")
     public Result<String> upload(@RequestPart("file") MultipartFile file) {
@@ -67,14 +72,17 @@ public class ArticleController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //TODO 上传文件
-        //TODO 存储文件
-        //TODO 返回链接
         result.setCode(HttpStatus.BAD_REQUEST);
         result.setMessage("上传失败");
         return result;
     }
 
+    /**
+     * 添加文件信息至数据库
+     * @param article 文章信息
+     * @return 结果
+     * @throws Exception
+     */
     @PostMapping("/add")
     @RequiresRoles("USER")
     public Result add(@RequestBody Article article) throws Exception {
@@ -88,6 +96,11 @@ public class ArticleController {
         return result;
     }
 
+    /**
+     * 删除文章
+     * @param id 文章id
+     * @return 删除结果
+     */
     @DeleteMapping("/del")
     @RequiresRoles("MODERATOR")
     public Result remove(@RequestParam("id") int id) {
@@ -106,6 +119,11 @@ public class ArticleController {
         return result;
     }
 
+    /**
+     * 修改文章
+     * @param article 修改文章信息
+     * @return 结果
+     */
     @PatchMapping("/update")
     @RequiresRoles("USER")
     public Result update(@RequestBody Article article) {
@@ -123,6 +141,11 @@ public class ArticleController {
         return result;
     }
 
+    /**
+     * 根据id获取文章
+     * @param id 文章id
+     * @return 结果
+     */
     @GetMapping("/{id}")
     public Result get(@PathVariable("id") int id) {
         Result result = new Result();
@@ -133,7 +156,14 @@ public class ArticleController {
         return result;
     }
 
-    @GetMapping("/list")
+    /**
+     * 根据关键词获取文章列表
+     * @param pageSize 页面显示数量
+     * @param pageNum 页数
+     * @param keywords 关键词
+     * @return 结果
+     */
+    @GetMapping("/s")
     public Result getList(@RequestParam("pageSize") int pageSize,
                           @RequestParam("pageNum") int pageNum,
                           @RequestParam("keywords") String keywords){
@@ -144,6 +174,32 @@ public class ArticleController {
         result.setData(articlePageInfo);
         result.setCode(HttpStatus.OK);
         result.setMessage("获取成功");
+        return result;
+    }
+
+    /**
+     * 条件查找文章列表
+     * @param pageSize 页面显示数量
+     * @param pageNum 页数
+     * @param userId 用户id
+     * @param forum 板块id
+     * @return 结果
+     */
+    @GetMapping("/list")
+    public Result<PageInfo> getListByWhere(@RequestParam("pageSize") int pageSize,
+                                           @RequestParam("pageNum") int pageNum,
+                                           @RequestParam(name = "userId",required = false) int userId,
+                                           @RequestParam(name = "forum",required = false) Byte forum){
+        Result result = new Result();
+        Article article = new Article();
+        article.setArticleForum(forum);
+        if(userId == 0){
+            article.setUserId(null);
+        }
+        PageInfo<Article> articlePageInfo = articleService.findList(pageNum, pageSize, article);
+        result.setData(articlePageInfo);
+        result.setMessage("获取成功");
+        result.setCode(HttpStatus.OK);
         return result;
     }
 

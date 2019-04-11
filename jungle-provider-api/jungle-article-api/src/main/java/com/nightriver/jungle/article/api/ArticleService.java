@@ -23,8 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 public interface ArticleService {
     /**
      * 上传文件
-     * @param file
-     * @return
+     * @param file 文件
+     * @return 结果
      */
     @PostMapping(name = "/upload",produces = {MediaType.APPLICATION_JSON_UTF8_VALUE},consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     Result<String> upload(@RequestPart("file") MultipartFile file);
@@ -32,8 +32,8 @@ public interface ArticleService {
     /**
      * 添加
      *
-     * @param article
-     * @return
+     * @param article 文章
+     * @return 结果
      */
     @PostMapping("/add")
     Result<String> add(@RequestBody Article article);
@@ -41,8 +41,8 @@ public interface ArticleService {
     /**
      * 刪除
      *
-     * @param id
-     * @return
+     * @param id id
+     * @return 结果
      */
     @DeleteMapping("/del")
     Result remove(@RequestParam("id") int id);
@@ -50,8 +50,8 @@ public interface ArticleService {
     /**
      * 修改
      *
-     * @param article
-     * @return
+     * @param article 文章
+     * @return 结果
      */
     @PatchMapping("/update")
     Result update(@RequestBody Article article);
@@ -73,9 +73,21 @@ public interface ArticleService {
      * @param keywords 关键字
      * @return
      */
-    @GetMapping("/list")
+    @GetMapping("/s")
     Result getList(@RequestParam("pageSize") int pageSize,
                    @RequestParam("pageNum") int pageNum,
                    @RequestParam("keywords") String keywords);
-
+    /**
+     * 条件查找文章列表
+     * @param pageSize 页面显示数量
+     * @param pageNum 页数
+     * @param userId 用户id
+     * @param forum 板块id
+     * @return 结果
+     */
+    @GetMapping("/list")
+    Result getListByWhere(@RequestParam("pageSize") int pageSize,
+                                           @RequestParam("pageNum") int pageNum,
+                                           @RequestParam(name = "userId",required = false) int userId,
+                                           @RequestParam(name = "forum",required = false) Byte forum);
 }

@@ -46,4 +46,9 @@ public class ArticleHystrix implements ArticleService {
     public Result getList(int pageSize, int pageNum, String keywords) {
         return Result.fail(HttpStatus.SERVICE_UNAVAILABLE,"服务器异常");
     }
+
+    @Override
+    public Result getListByWhere(int pageSize, int pageNum, int userId, Byte forum) {
+        return Result.fail(HttpStatus.SERVICE_UNAVAILABLE,"服务器异常");
+    }
 }
