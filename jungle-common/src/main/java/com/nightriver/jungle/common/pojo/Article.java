@@ -2,6 +2,8 @@ package com.nightriver.jungle.common.pojo;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,7 +17,7 @@ import java.util.Date;
  * @Version: 1.0
  **/
 @Entity
-@Document(indexName = "article", type = "article")
+@Document(indexName = "jungle", type = "article")
 public class Article implements Serializable {
     /**
      * 文章id
@@ -26,6 +28,7 @@ public class Article implements Serializable {
     /**
      * 文章标题
      */
+    @Field(type = FieldType.Text, analyzer = "ik_max_word")
     private String articleTitle;
     /**
      * 文章内容链接

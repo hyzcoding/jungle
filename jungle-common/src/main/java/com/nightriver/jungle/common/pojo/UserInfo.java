@@ -1,6 +1,9 @@
 package com.nightriver.jungle.common.pojo;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,11 +17,12 @@ import java.util.Date;
  * @Version: 1.0
  **/
 @Entity
+@Document(indexName = "jungle", type = "user")
 public class UserInfo implements Serializable {
     @Id
     @GeneratedValue
     private Integer userId;
-
+    @Field(type = FieldType.Text, analyzer = "ik_max_word")
     private String userName;
 
     private Byte userSex;

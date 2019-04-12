@@ -45,6 +45,15 @@ public interface ArticleService {
     PageInfo<Article> findList(int pageNum,int pageSize,Article article);
 
     /**
+     * 搜索
+     * @param pageNum
+     * @param pageSize
+     * @param keywords
+     * @return
+     */
+    PageInfo<Article> findListEs(int pageNum, int pageSize, String keywords);
+
+    /**
      * 修改文章
      * @param article
      * @return

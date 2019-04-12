@@ -9,6 +9,8 @@
         <result column="article_create" property="articleCreate"/>
         <result column="article_forum" property="articleForum"/>
         <result column="article_likes" property="articleLikes"/>
+        <result column="article_create" property="articleCreate"/>
+        <result column="user_id" property="userId"/>
     </resultMap>
     <insert id="insert" parameterType="com.nightriver.jungle.common.pojo.Article" useGeneratedKeys="true"
             keyProperty="article_id">
@@ -75,6 +77,7 @@
                 AND user_id = #{userId}
             </if>
         </where>
+        ORDER BY article_create DESC
     </select>
     <update id="update" parameterType="com.nightriver.jungle.common.pojo.Article">
         UPDATE article

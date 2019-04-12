@@ -5,13 +5,23 @@ import com.github.pagehelper.PageInfo;
 import com.nightriver.jungle.article.service.ArticleService;
 import com.nightriver.jungle.common.dao.ArticleMapper;
 import com.nightriver.jungle.common.pojo.Article;
+import com.nightriver.jungle.common.repo.ArticleRepository;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
- * 〈一句话功能简述〉<br>
+ * 〈文章service〉<br>
  * 〈 〉
  *
  * @author hyz
@@ -24,8 +34,12 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     ArticleMapper articleMapper;
 
+    @Autowired
+    ArticleRepository articleRepository;
+
     @Override
     public Article add(Article article) throws Exception {
+        articleRepository.save(article);
         articleMapper.insert(article);
         return article;
     }
@@ -54,6 +68,37 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    public  PageInfo<Article> findListEs(int pageNum, int pageSize, String keywords) {
+        QueryBuilder builder = QueryBuilders.boolQuery()
+                .should(QueryBuilders.fuzzyQuery("articleTitle",keywords))
+                .should(QueryBuilders.fuzzyQuery("articleForum",keywords));
+
+        FieldSortBuilder sort = SortBuilders.fieldSort("articleCreate").order(SortOrder.DESC);
+
+        //pageNum在es中从0开始
+        PageRequest page = new PageRequest(pageNum-1, pageSize);
+
+        //2.构建查询
+        NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
+        //将搜索条件设置到构建中
+        nativeSearchQueryBuilder.withQuery(builder);
+        //将分页设置到构建中
+        nativeSearchQueryBuilder.withPageable(page);
+        //将排序设置到构建中
+        nativeSearchQueryBuilder.withSort(sort);
+        //生产NativeSearchQuery
+        NativeSearchQuery query = nativeSearchQueryBuilder.build();
+
+        Page<Article> articles = articleRepository.search(query);
+        PageInfo<Article> articlePageInfo = new PageInfo<>();
+        articlePageInfo.setList(articles.getContent());
+        articlePageInfo.setPageNum(pageNum);
+        articlePageInfo.setSize(pageSize);
+        articlePageInfo.setTotal(articles.getTotalElements());
+        return articlePageInfo;
+    }
+
+    @Override
     public Article modify(Article article) throws Exception {
         articleMapper.update(article);
         return article;
@@ -61,6 +106,8 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public int remove(Integer id) throws Exception {
+        articleMapper.deleteById(id);
+        articleRepository.deleteById(id.toString());
         return 0;
     }
 }

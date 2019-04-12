@@ -5,10 +5,12 @@
         <result column="comments_id" jdbcType="INTEGER" property="commentsId"/>
         <result column="comments_content" jdbcType="VARCHAR" property="commentsContent"/>
         <result column="comments_type" jdbcType="TINYINT" property="commentsType"/>
+        <result column="comments_create" jdbcType="TIMESTAMP" property="commentsCreate"/>
+        <result column="parent_id" property="parentId"/>
     </resultMap>
     <insert id="insert" parameterType="com.nightriver.jungle.common.pojo.Comments">
-        INSERT INTO comments (comments_content, comments_type)
-        VALUES (#{commentsContent}, #{commentsType})
+        INSERT INTO comments (comments_content, comments_type,parent_id)
+        VALUES (#{commentsContent}, #{commentsType},#{parentId})
     </insert>
     <select id="selectOne" parameterType="com.nightriver.jungle.common.pojo.Comments" resultMap="BaseResultMap">
         SELECT * FROM comments
@@ -57,7 +59,11 @@
             <if test="commentsType != null">
                 AND comments_type = #{commentsType}
             </if>
+            <if test="parentId != null">
+                AND parent_id = #{parentId}
+            </if>
         </where>
+        ORDER BY comments_create DESC
     </select>
     <update id="update" parameterType="com.nightriver.jungle.common.pojo.Comments">
         UPDATE comments

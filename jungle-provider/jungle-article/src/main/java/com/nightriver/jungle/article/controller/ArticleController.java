@@ -168,9 +168,7 @@ public class ArticleController {
                           @RequestParam("pageNum") int pageNum,
                           @RequestParam("keywords") String keywords){
         Result result = new Result();
-        Article article = new Article();
-        article.setArticleTitle(keywords);
-        PageInfo<Article> articlePageInfo = articleService.findList(pageNum, pageSize, article);
+        PageInfo<Article> articlePageInfo = articleService.findListEs(pageNum, pageSize, keywords);
         result.setData(articlePageInfo);
         result.setCode(HttpStatus.OK);
         result.setMessage("获取成功");

@@ -8,7 +8,7 @@
     </head>
     <body>
         <#include "nav.ftl">
-        <div class="contenter">
+        <div class="content">
 
         </div>
         <#include "foot.ftl">

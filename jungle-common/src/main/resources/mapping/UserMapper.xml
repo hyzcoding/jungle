@@ -57,6 +57,7 @@
                 AND user_eml = #{userEml}
             </if>
         </where>
+        ORDER BY user_id
     </select>
     <update id="update" parameterType="com.nightriver.jungle.common.pojo.User">
         UPDATE user
