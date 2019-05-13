@@ -21,14 +21,22 @@ import javax.servlet.http.HttpServletRequest;
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    // 捕捉shiro的异常
+    /**
+     * 捕捉shiro的异常
+     * @return
+     */
     @ExceptionHandler(ShiroException.class)
     @ResponseBody
     public Result handle401() {
         return Result.fail(HttpStatus.UNAUTHORIZED, "您没有权限访问！");
     }
 
-    // 捕捉其他所有异常
+    /**
+     * 捕捉其他所有异常
+     * @param request
+     * @param ex
+     * @return
+     */
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public Result globalException(HttpServletRequest request, Throwable ex) {

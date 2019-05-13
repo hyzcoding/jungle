@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -31,24 +30,20 @@ public class ArticleController {
 
     @PostMapping("/upload")
     @ResponseBody
-    public String upload(@RequestParam("file") MultipartFile file,
+    public String upload(@RequestParam("file") String file,
                          @RequestParam("title") String title,
                          @RequestParam("forum") String forum) {
         //上传文件
-        Result<String> resultUpload = articleService.upload(file);
         //添加文章
-       if(resultUpload.getCode() == HttpStatus.OK){
            Article article = new Article();
            article.setArticleTitle(title);
-           article.setArticleContent(resultUpload.getData());
            article.setArticleForum(Byte.valueOf(forum));
+           article.setArticleContent(file);
            Result result = articleService.add(article);
            if(result.getCode()!=HttpStatus.OK){
                return "提交失败";
            }
            return "提交成功";
-       }
-        return "提交失败";
     }
     @GetMapping("/all")
     public Result getList(int pageNum){

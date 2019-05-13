@@ -76,7 +76,7 @@ public class ArticleServiceImpl implements ArticleService {
         FieldSortBuilder sort = SortBuilders.fieldSort("articleCreate").order(SortOrder.DESC);
 
         //pageNum在es中从0开始
-        PageRequest page = new PageRequest(pageNum-1, pageSize);
+        PageRequest page = PageRequest.of(pageNum-1, pageSize);
 
         //2.构建查询
         NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
