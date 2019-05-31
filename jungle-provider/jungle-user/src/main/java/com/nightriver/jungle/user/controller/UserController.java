@@ -18,14 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.internet.MimeMessage;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @Description:
@@ -63,21 +63,23 @@ public class UserController {
      * @return 返回结果
      */
     @GetMapping("/vcode")
-    public Result vCode(@RequestParam("email") String email) {
+    public Result vCode(@RequestParam("email") String email) throws Exception {
         Result result = new Result();
         //查询邮箱是否合法
         if (ValidatorUtil.isEmail(email)) {
             //邮箱是否注册查询
             String code = MailUtil.random(6);
-            //发送验证码
-            SimpleMailMessage message = new SimpleMailMessage();
+            //发送验证码模板
+            MimeMessage mail = mailSender.createMimeMessage();
+            MimeMessageHelper message = new MimeMessageHelper(mail);
             message.setFrom(from);
             message.setTo(email);
             message.setSubject("JUNGLE 注册验证码");
-            message.setText(MailUtil.html(code));
-            mailSender.send(message);
+            message.setText(MailUtil.html(code),true);
+            mailSender.send(mail);
             result.setMessage("发送验证码成功");
-            stringRedisTemplate.opsForValue().set(email,code,300, TimeUnit.SECONDS);
+            //TODO 开启redis 存储验证码和邮箱
+//            stringRedisTemplate.opsForValue().set(email,code,300, TimeUnit.SECONDS);
             result.setCode(HttpStatus.OK);
             result.setData(code);
         } else {
@@ -104,6 +106,7 @@ public class UserController {
                            @RequestParam("sex") Integer sex,
                            @RequestParam("vcode") String vcode) throws Exception {
         Result result = new Result();
+        //TODO redis 取出 验证码
         String dbvcode = stringRedisTemplate.opsForValue().get(email);
         //后端验证有效性
         User user = new User();

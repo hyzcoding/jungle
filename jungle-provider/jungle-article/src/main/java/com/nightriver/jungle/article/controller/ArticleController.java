@@ -37,6 +37,7 @@ public class ArticleController {
     @PostMapping("/add")
     @RequiresRoles("USER")
     public Result add(@RequestBody Article article) throws Exception {
+        logger.info(SecurityUtils.getSubject().getPrincipal().toString());
         String token = (String) SecurityUtils.getSubject().getPrincipal();
         int userId = JwtUtil.getId(token);
         article.setUserId(userId);
@@ -44,6 +45,7 @@ public class ArticleController {
         Result result = new Result();
         result.setCode(HttpStatus.OK);
         result.setMessage("添加成功");
+        result.setData(article);
         return result;
     }
 
@@ -138,7 +140,7 @@ public class ArticleController {
     public Result<PageInfo> getListByWhere(@RequestParam("pageSize") int pageSize,
                                            @RequestParam("pageNum") int pageNum,
                                            @RequestParam(name = "userId",required = false) int userId,
-                                           @RequestParam(name = "forum",required = false) Byte forum){
+                                           @RequestParam(name = "forum",required = false) String forum){
         Result result = new Result();
         Article article = new Article();
         article.setArticleForum(forum);

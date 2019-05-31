@@ -2,6 +2,8 @@ package com.nightriver.jungle.common.exception;
 
 import com.nightriver.jungle.common.dto.Result;
 import org.apache.shiro.ShiroException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -12,7 +14,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 〈一句话功能简述〉<br>
+ * 〈全局异常捕捉〉<br>
  * 〈 〉
  *
  * @author hyz
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     /**
      * 捕捉shiro的异常
      * @return
@@ -40,6 +43,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public Result globalException(HttpServletRequest request, Throwable ex) {
+        logger.warn(ex.getMessage());
         if (ex instanceof NullPointerException) {
             return Result.fail(HttpStatus.BAD_REQUEST, "未填写参数");
         } else if (ex instanceof NumberFormatException || ex instanceof MethodArgumentTypeMismatchException) {

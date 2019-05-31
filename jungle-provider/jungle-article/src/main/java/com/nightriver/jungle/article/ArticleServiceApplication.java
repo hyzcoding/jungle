@@ -5,9 +5,10 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 /**
- * 〈一句话功能简述〉<br>
+ * 〈articleServiceApplication启动类〉<br>
  * 〈 〉
  *
  * @author hyz
@@ -18,6 +19,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 @SpringBootApplication(scanBasePackages = {"com.nightriver.jungle"})
 @MapperScan("com.nightriver.jungle.common.dao")
 @EnableSwagger2Doc
+@EnableElasticsearchRepositories(basePackages = "com.nightriver.jungle.common.repo")
 public class ArticleServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(ArticleServiceApplication.class, args);

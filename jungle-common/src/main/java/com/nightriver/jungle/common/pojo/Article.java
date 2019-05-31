@@ -20,10 +20,14 @@ import java.util.Date;
 @Document(indexName = "jungle", type = "article")
 public class Article implements Serializable {
     /**
-     * 文章id
+     * 文章elastic-search-id
      */
     @Id
     @GeneratedValue
+    private String Id;
+    /**
+     * 文章mysql-id
+     */
     private Integer articleId;
     /**
      * 文章标题
@@ -31,28 +35,34 @@ public class Article implements Serializable {
     @Field(type = FieldType.Text, analyzer = "ik_max_word")
     private String articleTitle;
     /**
-     * 文章内容链接
+     * 文章内容
      */
+    @Field(type = FieldType.Text, analyzer = "ik_max_word")
     private String articleContent;
     /**
      * 文章观看数量
      */
+    @Field(type = FieldType.Integer)
     private Integer articleViews;
     /**
      * 文章创建时间
      */
+    @Field(type = FieldType.Integer)
     private Date articleCreate;
     /**
      * 文章板块
      */
-    private Byte articleForum;
+    @Field(type = FieldType.Text)
+    private String articleForum;
     /**
      * 文章点赞数
      */
+    @Field(type = FieldType.Integer)
     private Integer articleLikes;
     /**
      * 提交用户id
      */
+    @Field(type = FieldType.Integer)
     private Integer userId;
 
     public Integer getArticleId() {
@@ -95,12 +105,20 @@ public class Article implements Serializable {
         this.articleCreate = articleCreate;
     }
 
-    public Byte getArticleForum() {
-        return articleForum;
+    public void setArticleForum(String articleForum) {
+        this.articleForum = articleForum;
     }
 
-    public void setArticleForum(Byte articleForum) {
-        this.articleForum = articleForum;
+    public String getId() {
+        return Id;
+    }
+
+    public void setId(String id) {
+        Id = id;
+    }
+
+    public String getArticleForum() {
+        return articleForum;
     }
 
     public Integer getArticleLikes() {

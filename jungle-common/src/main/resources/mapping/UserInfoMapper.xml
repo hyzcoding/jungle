@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nightriver.jungle.common.dao.UserInfoMapper">
   <resultMap id="BaseResultMap" type="com.nightriver.jungle.common.pojo.UserInfo">
-    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="user_name" jdbcType="VARCHAR" property="userName" />
     <result column="user_sex" jdbcType="TINYINT" property="userSex" />
     <result column="user_following" jdbcType="INTEGER" property="userFollowing" />

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nightriver.jungle.common.dao.RelationMapper">
   <resultMap id="BaseResultMap" type="com.nightriver.jungle.common.pojo.Relation">
-    <result column="relation_id" jdbcType="INTEGER" property="relationId" />
+    <id column="relation_id" jdbcType="INTEGER" property="relationId" />
     <result column="relation_active" jdbcType="INTEGER" property="relationActive" />
     <result column="relation_passive" jdbcType="INTEGER" property="relationPassive" />
     <result column="relation_type" jdbcType="TINYINT" property="relationType" />

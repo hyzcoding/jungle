@@ -18,6 +18,7 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,8 +40,14 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Article add(Article article) throws Exception {
-        articleRepository.save(article);
         articleMapper.insert(article);
+        //todo 调整插入代码结构
+        //暂时使用人工设置
+        article.setArticleLikes(0);
+        article.setArticleViews(0);
+        article.setArticleCreate(new Date());
+        //结束人工设置
+        articleRepository.save(article);
         return article;
     }
 
@@ -60,23 +67,26 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public PageInfo<Article> findList(int pageNum,int pageSize,Article article) {
-        PageHelper.startPage(pageNum,pageSize);
+    public PageInfo<Article> findList(int pageNum, int pageSize, Article article) {
+        PageHelper.startPage(pageNum, pageSize);
         List<Article> articles = articleMapper.selectList(article);
         PageInfo<Article> articlePageInfo = new PageInfo<>(articles);
         return articlePageInfo;
     }
 
     @Override
-    public  PageInfo<Article> findListEs(int pageNum, int pageSize, String keywords) {
-        QueryBuilder builder = QueryBuilders.boolQuery()
+    public PageInfo<Article> findListEs(int pageNum, int pageSize, String keywords) {
+        if (pageNum <= 0 || pageSize <= 0) {
+            throw new NumberFormatException();
+        }
+        QueryBuilder builder =
+                QueryBuilders.boolQuery()
                 .should(QueryBuilders.fuzzyQuery("articleTitle",keywords))
                 .should(QueryBuilders.fuzzyQuery("articleForum",keywords));
-
         FieldSortBuilder sort = SortBuilders.fieldSort("articleCreate").order(SortOrder.DESC);
 
         //pageNum在es中从0开始
-        PageRequest page = PageRequest.of(pageNum-1, pageSize);
+        PageRequest page = PageRequest.of(pageNum - 1, pageSize);
 
         //2.构建查询
         NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
