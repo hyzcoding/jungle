@@ -26,6 +26,7 @@ public class MailUtil {
 
 
     public static String random(int length) {
+
         String random = "";
         /*随机数函数*/
         java.util.Random r = new java.util.Random();
@@ -37,14 +38,13 @@ public class MailUtil {
     }
 
     public static String html(String code) throws Exception {
-        String mailtemplatsPath = "/mail";
+        String mailTemplatesPath = "/mail";
         String fileName = "/register.ftl";
-        //TODO 改为模板型的邮件发送
         Configuration configuration = new Configuration(Configuration.getVersion());
-        configuration.setClassLoaderForTemplateLoading(MailUtil.class.getClassLoader(),mailtemplatsPath);
+        configuration.setClassLoaderForTemplateLoading(MailUtil.class.getClassLoader(), mailTemplatesPath);
         Template template = configuration.getTemplate(fileName);
-        Map<String,String> model = new HashMap<>(1);
-        model.put("code",code);
+        Map<String, String> model = new HashMap<>(1);
+        model.put("code", code);
         String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
         return html;
     }

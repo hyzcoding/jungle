@@ -4,17 +4,17 @@ spring:
 #  profiles: docker
 #  profiles:
 #    active: dev
-  rabbitmq:
-    host: 192.168.176.128
-    port: 5672
-    username: root
-    password: root
+#  rabbitmq:
+#    host: 192.168.176.130
+#    port: 5672
+#    username: root
+#    password: root
   mail:
     host: smtp.163.com
     from: hyz804762373@163.com
     default-encoding: UTF-8
     username:  hyz804762373@163.com
-    password:  hyz951226
+    password:  hyz18711000254
     properties:
       mail:
         smtp:
@@ -22,4 +22,11 @@ spring:
           starttls:
             enable: true
             required: true
-
+        port: 465
+#without config
+server:
+  port: 9001
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/

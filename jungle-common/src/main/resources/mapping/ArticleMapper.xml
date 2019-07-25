@@ -4,6 +4,7 @@
     <resultMap id="BaseResultMap" type="com.nightriver.jungle.common.pojo.Article">
         <id column="article_id" property="articleId"/>
         <result column="article_title" property="articleTitle"/>
+        <result column="article_description" property="articleDescription"/>
         <result column="article_content" property="articleContent"/>
         <result column="article_views" property="articleViews"/>
         <result column="article_create" property="articleCreate"/>
@@ -25,6 +26,9 @@
             </if>
             <if test="articleTitle != null">
                 AND article_title like #{articleTitle}
+            </if>
+            <if test="articleDescription != null">
+                AND article_description like #{articleDescription}
             </if>
             <if test="articleForum != null">
                 AND article_forum = #{articleForum}
@@ -53,6 +57,9 @@
             <if test="articleTitle != null">
                 AND article_title like #{articleTitle}
             </if>
+            <if test="articleDescription != null">
+                AND article_description like #{articleDescription}
+            </if>
             <if test="articleForum != null">
                 AND article_forum = #{articleForum}
             </if>
@@ -70,6 +77,9 @@
             <if test="articleTitle != null">
                 AND article_title like #{articleTitle}
             </if>
+            <if test="articleDescription != null">
+                AND article_description like #{articleDescription}
+            </if>
             <if test="articleForum != null">
                 AND article_forum = #{articleForum}
             </if>
@@ -84,6 +94,7 @@
         <set>
             <if test="articleTitle != null">article_title=#{articleTitle},</if>
             <if test="articleForum != null">article_forum=#{articleForum},</if>
+            <if test="articleDescription != null">article_description=#{articleDescription}, </if>
             <if test="articleContent != null">article_content=#{articleContent},</if>
             <if test="userId != null">user_id=#{userId}</if>
         </set>

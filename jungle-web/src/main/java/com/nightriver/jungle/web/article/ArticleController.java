@@ -37,7 +37,7 @@ public class ArticleController {
         //添加文章
            Article article = new Article();
            article.setArticleTitle(title);
-           article.setArticleForum(Byte.valueOf(forum));
+           article.setArticleForum(forum);
            article.setArticleContent(file);
            Result result = articleService.add(article);
            if(result.getCode()!=HttpStatus.OK){

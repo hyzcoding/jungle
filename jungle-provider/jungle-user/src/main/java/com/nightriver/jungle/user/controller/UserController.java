@@ -28,7 +28,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
- * @Description:
+ * @Description:   用户相关
  * @Author:         hyz
  * @CreateDate:     2019/3/28
  * @Version:        1.0
@@ -64,6 +64,7 @@ public class UserController {
      */
     @GetMapping("/vcode")
     public Result vCode(@RequestParam("email") String email) throws Exception {
+        //todo 尝试使用消息队列处理
         Result result = new Result();
         //查询邮箱是否合法
         if (ValidatorUtil.isEmail(email)) {
@@ -148,7 +149,7 @@ public class UserController {
     /**
      * 管理员添加用户
      *
-     * @return
+     * @return result
      */
     @PostMapping("/user/add")
     @RequiresRoles("ADMIN")
@@ -300,7 +301,7 @@ public class UserController {
         Result result = new Result();
         subject = SecurityUtils.getSubject();
         User loginUser = JwtUtil.checkRole(subject);
-        if (loginUser.getUserRole().equals(Role.USER) && !loginUser.getUserId().equals(user.getUserId())) {
+        if (Role.USER.equals(loginUser.getUserRole()) && !loginUser.getUserId().equals(user.getUserId())) {
             result.setMessage("没有权限");
             result.setCode(HttpStatus.UNAUTHORIZED);
             return result;
@@ -353,8 +354,8 @@ public class UserController {
      */
     @DeleteMapping("/user")
     @RequiresRoles("ADMIN")
-    public Result remove(@RequestParam("id") int id) {
-        Result result = new Result();
+    public Result<Boolean> remove(@RequestParam("id") int id) {
+        Result<Boolean> result = new Result<>();
         try {
             if (userService.remove(id)) {
                 result.setMessage("删除成功");
@@ -382,10 +383,10 @@ public class UserController {
      */
     @PostMapping("/upload")
     @RequiresRoles("USER")
-    public Result upload(@RequestParam("avatar") MultipartFile avatar) {
+    public Result<String> upload(@RequestParam("avatar") MultipartFile avatar) throws Exception {
         subject = SecurityUtils.getSubject();
         User loginUser = JwtUtil.checkRole(subject);
-        Result result = new Result();
+        Result<String> result = new Result<>();
         if (avatar.isEmpty()) {
             result.setCode(HttpStatus.BAD_REQUEST);
             result.setMessage("图片为空");
@@ -408,7 +409,9 @@ public class UserController {
         }
         //TODO 上传文件
         //TODO 存储文件
-        //TODO 返回链接
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserAvatar(result.getData());
+        userService.modifyInfo(userInfo);
         result.setCode(HttpStatus.BAD_REQUEST);
         result.setMessage("上传失败");
         return result;

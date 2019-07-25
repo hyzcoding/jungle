@@ -2,7 +2,9 @@ package com.nightriver.jungle.comments.service.impl;
 
 import com.github.pagehelper.PageInfo;
 import com.nightriver.jungle.comments.service.CommentsService;
+import com.nightriver.jungle.common.dao.CommentsMapper;
 import com.nightriver.jungle.common.pojo.Comments;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 评论处理服务
@@ -13,21 +15,23 @@ import com.nightriver.jungle.common.pojo.Comments;
  * @since 1.0.0
  */
 public class CommentsServiceImpl implements CommentsService {
+    @Autowired
+    CommentsMapper commentsMapper;
+
     @Override
     public int add(Comments comments) {
-        //TODO 增加
-        return 0;
+        return commentsMapper.insert(comments);
     }
 
     @Override
     public Comments findById(int id) {
-        //TODO 查询
-        return null;
+        return commentsMapper.selectById(id);
     }
 
     @Override
     public PageInfo<Comments> findByWhere(Comments comments) {
-        //TODO 查询
+        PageInfo<Comments> commentsPageInfo = new PageInfo<>();
+        //TODO 分页
         return null;
     }
 }

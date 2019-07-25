@@ -1,13 +1,16 @@
 package com.nightriver.jungle.comments.controller;
 
-import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
+import com.nightriver.jungle.comments.service.CommentsService;
 import com.nightriver.jungle.common.dto.Result;
 import com.nightriver.jungle.common.pojo.Comments;
 import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 〈一句话功能简述〉<br>
+ * 〈评论相关〉<br>
  * 〈 〉
  *
  * @author hyz
@@ -16,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
  */
 @RequestMapping("/comments")
 public class CommentsController {
+
+    @Autowired
+    CommentsService commentsService;
     /**
      * 上传评论
      * @param comments
@@ -23,9 +29,11 @@ public class CommentsController {
      */
     @PostMapping("/upload")
     @RequiresRoles("USER")
-    public Result<String> upload(@RequestBody Comments comments){
-        Result<String> result = new Result<>();
-        //TODO 存储操作
+    public Result<Comments> upload(@RequestBody Comments comments){
+        Result<Comments> result = new Result<>();
+        commentsService.add(comments);
+        result.setCode(HttpStatus.OK);
+        result.setData(comments);
         return  result;
     }
 
@@ -35,9 +43,13 @@ public class CommentsController {
      * @return
      */
     @GetMapping("/list")
-    public Result<Page<Comments>> getList(@RequestParam("id") int parentId){
-        Result<Page<Comments>> result = new Result<>();
-        //TODO 查询操作
+    public Result<PageInfo<Comments>> getList(@RequestParam("id") int parentId){
+        Result<PageInfo<Comments>> result = new Result<>();
+        Comments comments = new Comments();
+        comments.setParentId(parentId);
+        PageInfo<Comments> commentsPageInfo = commentsService.findByWhere(comments);
+        result.setCode(HttpStatus.OK);
+        result.setData(commentsPageInfo);
         return result;
     }
 
@@ -49,7 +61,9 @@ public class CommentsController {
     @GetMapping("/{id}")
     public Result<Comments> get(@PathVariable("id") int id){
         Result<Comments> result = new Result<>();
-        //TODO 查询操作
+        Comments comments = commentsService.findById(id);
+        result.setCode(HttpStatus.OK);
+        result.setData(comments);
         return result;
     }
 

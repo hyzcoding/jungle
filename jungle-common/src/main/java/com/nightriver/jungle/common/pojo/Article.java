@@ -30,6 +30,10 @@ public class Article implements Serializable {
      */
     private Integer articleId;
     /**
+     * 文章描述
+     */
+    private String articleDescription;
+    /**
      * 文章标题
      */
     @Field(type = FieldType.Text, analyzer = "ik_max_word")
@@ -75,6 +79,14 @@ public class Article implements Serializable {
 
     public String getArticleTitle() {
         return articleTitle;
+    }
+
+    public String getArticleDescription() {
+        return articleDescription;
+    }
+
+    public void setArticleDescription(String articleDescription) {
+        this.articleDescription = articleDescription;
     }
 
     public void setArticleTitle(String articleTitle) {
@@ -140,12 +152,14 @@ public class Article implements Serializable {
     @Override
     public String toString() {
         return "Article{" +
-                "articleId=" + articleId +
+                "Id='" + Id + '\'' +
+                ", articleId=" + articleId +
+                ", articleDescription='" + articleDescription + '\'' +
                 ", articleTitle='" + articleTitle + '\'' +
                 ", articleContent='" + articleContent + '\'' +
                 ", articleViews=" + articleViews +
                 ", articleCreate=" + articleCreate +
-                ", articleForum=" + articleForum +
+                ", articleForum='" + articleForum + '\'' +
                 ", articleLikes=" + articleLikes +
                 ", userId=" + userId +
                 '}';

@@ -1,17 +1,22 @@
 spring:
   application:
     name: jungle-article
-  profiles: docker
-  datasource:
-    username: root
-    password: root
-    #zipkin管理端微服务的地址
-  zipkin:
-    base-url: http://localhost:9411/
-  sleuth:
-    sampler:
-      #抓取100%的日志,一般在开发环境，该值设置为1，生产环境视情况而定
-      probability: 1.0
+  #  profiles: docker
+  #  profiles:
+  #    active: dev
+
+  data:
+    elasticsearch:
+      repositories:
+        enabled: true
+      cluster-nodes: 127.0.0.1:9300
+      cluster-name: elastic-search
+#  rabbitmq:
+#    host: 192.168.176.130
+#    port: 5672
+#    username: root
+#    password: root
+#without config
 server:
   port: 9003
 eureka:

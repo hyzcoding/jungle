@@ -25,6 +25,8 @@ public class Comments implements Serializable {
 
     private Integer parentId;
 
+    private Integer userId;
+
     private Timestamp commentsCreate;
 
     public Integer getCommentsId() {
@@ -57,6 +59,14 @@ public class Comments implements Serializable {
 
     public void setParentId(Integer parentId) {
         this.parentId = parentId;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     @Override
