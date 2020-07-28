@@ -14,7 +14,7 @@ spring:
     from: hyz804762373@163.com
     default-encoding: UTF-8
     username:  hyz804762373@163.com
-    password:  hyz18711000254
+    password:  #####
     properties:
       mail:
         smtp:
