@@ -26,7 +26,7 @@ spring:
         - http://localhost:9200  # ES服务器的地址！
       read-timeout: 5000
 mybatis:
-  typeAliasesPackage: com.nightriver.jungle.common.pojo
+  typeAliasesPackage: com.hyzcoding.jungle.common.pojo
   mapper-locations: classpath:mapping/*.xml
 #七牛云
 qiniu:

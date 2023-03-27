@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.nightriver.jungle.common.dao.UserMapper">
-    <resultMap id="BaseResultMap" type="com.nightriver.jungle.common.pojo.User">
+<mapper namespace="com.hyzcoding.jungle.common.dao.UserMapper">
+    <resultMap id="BaseResultMap" type="com.hyzcoding.jungle.common.pojo.User">
         <result column="user_id" jdbcType="INTEGER" property="userId"/>
         <result column="user_pwd" jdbcType="VARCHAR" property="userPwd"/>
         <result column="user_eml" jdbcType="VARCHAR" property="userEml"/>
         <result column="user_role" jdbcType="VARCHAR" property="userRole"/>
         <result column="user_coin" jdbcType="INTEGER" property="userCoin"/>
     </resultMap>
-    <insert id="insert" parameterType="com.nightriver.jungle.common.pojo.User">
+    <insert id="insert" parameterType="com.hyzcoding.jungle.common.pojo.User">
         insert into user (user_pwd, user_eml,
                            user_role)
         values (#{userPwd,jdbcType=VARCHAR}, #{userEml,jdbcType=VARCHAR},
                 #{userRole,jdbcType=TINYINT})
     </insert>
-    <select id="selectOne" parameterType="com.nightriver.jungle.common.pojo.User" resultMap="BaseResultMap">
+    <select id="selectOne" parameterType="com.hyzcoding.jungle.common.pojo.User" resultMap="BaseResultMap">
         SELECT * FROM user
         <where>
             <if test="userId != null">
@@ -35,7 +35,7 @@
         </where>
         LIMIT 1
     </select>
-    <select id="count" parameterType="com.nightriver.jungle.common.pojo.User" resultType="java.lang.Integer">
+    <select id="count" parameterType="com.hyzcoding.jungle.common.pojo.User" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM user
         <where>
             <if test="userId != null">
@@ -47,7 +47,7 @@
         </where>
         LIMIT 1
     </select>
-    <select id="selectList" parameterType="com.nightriver.jungle.common.pojo.User" resultMap="BaseResultMap">
+    <select id="selectList" parameterType="com.hyzcoding.jungle.common.pojo.User" resultMap="BaseResultMap">
         SELECT * FROM user
         <where>
             <if test="userId != null">
@@ -59,7 +59,7 @@
         </where>
         ORDER BY user_id
     </select>
-    <update id="update" parameterType="com.nightriver.jungle.common.pojo.User">
+    <update id="update" parameterType="com.hyzcoding.jungle.common.pojo.User">
         UPDATE user
         <set>
             <if test="userEml != null">user_eml=#{userEml},</if>

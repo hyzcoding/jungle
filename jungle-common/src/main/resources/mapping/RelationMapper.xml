@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.nightriver.jungle.common.dao.RelationMapper">
-  <resultMap id="BaseResultMap" type="com.nightriver.jungle.common.pojo.Relation">
+<mapper namespace="com.hyzcoding.jungle.common.dao.RelationMapper">
+  <resultMap id="BaseResultMap" type="com.hyzcoding.jungle.common.pojo.Relation">
     <result column="relation_id" jdbcType="INTEGER" property="relationId" />
     <result column="relation_active" jdbcType="INTEGER" property="relationActive" />
     <result column="relation_passive" jdbcType="INTEGER" property="relationPassive" />
     <result column="relation_type" jdbcType="TINYINT" property="relationType" />
   </resultMap>
-  <insert id="insert" parameterType="com.nightriver.jungle.common.pojo.Relation">
+  <insert id="insert" parameterType="com.hyzcoding.jungle.common.pojo.Relation">
     INSERT INTO relation (relation_active, relation_passive,
       relation_type) VALUES ( #{relationActive}, #{relationPassive},
       #{relationType})
   </insert>
-  <select id="selectOne" parameterType="com.nightriver.jungle.common.pojo.Relation" resultMap="BaseResultMap">
+  <select id="selectOne" parameterType="com.hyzcoding.jungle.common.pojo.Relation" resultMap="BaseResultMap">
     SELECT * FROM relation
     <where>
       <if test="relationId != null">
@@ -39,7 +39,7 @@
     </where>
     LIMIT 1
   </select>
-  <select id="count" parameterType="com.nightriver.jungle.common.pojo.Relation" resultType="java.lang.Integer">
+  <select id="count" parameterType="com.hyzcoding.jungle.common.pojo.Relation" resultType="java.lang.Integer">
     SELECT COUNT(*) FROM relation
     <where>
       <if test="relationId != null">
@@ -56,7 +56,7 @@
       </if>
     </where>
   </select>
-  <select id="selectList" parameterType="com.nightriver.jungle.common.pojo.Relation" resultMap="BaseResultMap">
+  <select id="selectList" parameterType="com.hyzcoding.jungle.common.pojo.Relation" resultMap="BaseResultMap">
     SELECT * FROM relation
     <where>
       <if test="relationId != null">
@@ -73,7 +73,7 @@
       </if>
     </where>
   </select>
-  <update id="update" parameterType="com.nightriver.jungle.common.pojo.Relation">
+  <update id="update" parameterType="com.hyzcoding.jungle.common.pojo.Relation">
     UPDATE relation
     <set>
       <if test="relationActive != null">relation_active=#{relationActive},</if>
