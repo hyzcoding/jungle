@@ -12,6 +12,7 @@ public interface ArticleService {
      * 添加文章
      * @param article
      * @return
+     * @throws Exception
      */
     @Transactional(rollbackFor = {Exception.class})
     Article add(Article article) throws Exception;

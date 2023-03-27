@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- *
+ * 全文检索
+ * @author hu
  *
  */
 @Component

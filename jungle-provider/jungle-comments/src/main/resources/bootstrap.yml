@@ -1,12 +1,12 @@
 server:
-  port: 9001
+  port: 9005
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
 spring:
   application:
-    name: jungle-user
+    name: jungle-comments
   cloud:
     config:
       profile: dev

@@ -24,7 +24,7 @@ spring:
     jest:
       uris:
         # ES
-        http://localhost:9200
+        http://192.168.176.130:9200
       read-timeout: 5000
 mybatis:
   typeAliasesPackage: com.hyzcoding.jungle.common.pojo

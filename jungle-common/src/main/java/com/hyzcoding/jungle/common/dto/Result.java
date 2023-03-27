@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class Result<T> {
-    private HttpStatus code = HttpStatus.OK;
+    private int code;
     private String message;
     private T data;
 
@@ -25,11 +25,11 @@ public class Result<T> {
     }
 
     public HttpStatus getCode() {
-        return code;
+        return HttpStatus.valueOf(code);
     }
 
     public void setCode(HttpStatus code) {
-        this.code = code;
+        this.code = code.value();
     }
 
     public String getMessage() {

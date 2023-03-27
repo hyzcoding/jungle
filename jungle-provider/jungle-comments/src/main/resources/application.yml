@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: jungle-comments
+#  profiles: docker
+#  profiles:
+#    active: dev
+  rabbitmq:
+    host: 192.168.176.130
+    port: 5672
+    username: root
+    password: root
+
