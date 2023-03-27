@@ -1,4 +1,4 @@
-package com.nightriver.jungle.comments.service;
+package com.hyzcoding.jungle.comments.service;
 
 import com.github.pagehelper.PageInfo;
 import com.nightriver.jungle.common.pojo.Comments;

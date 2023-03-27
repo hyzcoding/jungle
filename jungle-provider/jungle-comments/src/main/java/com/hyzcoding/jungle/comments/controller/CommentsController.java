@@ -1,7 +1,7 @@
-package com.nightriver.jungle.comments.controller;
+package com.hyzcoding.jungle.comments.controller;
 
 import com.github.pagehelper.PageInfo;
-import com.nightriver.jungle.comments.service.CommentsService;
+import com.hyzcoding.jungle.comments.service.CommentsService;
 import com.nightriver.jungle.common.dto.Result;
 import com.nightriver.jungle.common.pojo.Comments;
 import org.apache.shiro.authz.annotation.RequiresRoles;

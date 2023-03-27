@@ -190,7 +190,7 @@ public class ArticleController {
                                            @RequestParam(name = "forum",required = false) Byte forum){
         Result result = new Result();
         Article article = new Article();
-        article.setArticleForum(forum);
+        article.setArticleForum(String.valueOf(forum));
         if(userId == 0){
             article.setUserId(null);
         }

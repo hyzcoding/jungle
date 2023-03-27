@@ -1,7 +1,7 @@
-package com.nightriver.jungle.comments.service.impl;
+package com.hyzcoding.jungle.comments.service.impl;
 
 import com.github.pagehelper.PageInfo;
-import com.nightriver.jungle.comments.service.CommentsService;
+import com.hyzcoding.jungle.comments.service.CommentsService;
 import com.nightriver.jungle.common.dao.CommentsMapper;
 import com.nightriver.jungle.common.pojo.Comments;
 import org.springframework.beans.factory.annotation.Autowired;
