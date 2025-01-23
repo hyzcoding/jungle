@@ -27,7 +27,7 @@ spring:
         http://192.168.176.130:9200
       read-timeout: 5000
 mybatis:
-  typeAliasesPackage: com.nightriver.jungle.common.pojo
+  typeAliasesPackage: com.hyzcoding.jungle.common.pojo
   mapper-locations: classpath:mapping/*.xml
 #七牛云
 qiniu:
